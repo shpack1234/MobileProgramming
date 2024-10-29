@@ -23,5 +23,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Log.d("TEST", "commit test");
+        Log.d("TEST_BSH", "commit test");
     }
 }
