@@ -1,28 +1,30 @@
 package com.ref.project;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import androidx.annotation.NonNull;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,9 +37,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // 자동 로그인 처리
+        SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
+        String idToken = prefs.getString("idToken", null);
+        if (idToken != null) {
+            // 이미 로그인된 경우 MainActivity로 이동
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();  // 현재 LoginActivity 종료
+        }
+
         // GoogleSignInOptions 설정
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("YOUR_CLIENT_ID")  // 클라이언트 ID 입력
+                .requestIdToken("62636819993-5u032t1ep4oo7l729tbof8u3o6g800ma.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -74,12 +86,25 @@ public class LoginActivity extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String idToken = account.getIdToken();
 
-            Log.d("Token", idToken);
-            // 서버로 ID 토큰을 보내고 JWT 토큰을 요청
-            //requestJWTToken(idToken);
+            if (idToken != null) {
+                Log.d(TAG, "ID Token: " + idToken); // ID 토큰 로그
+                requestJWTToken(idToken); // JWT 토큰 요청
+
+                SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("idToken", idToken);  // ID 토큰 저장
+                editor.apply();
+
+                // 로그인 성공 후 MainActivity로 이동
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                Log.e(TAG, "ID Token is null");
+            }
 
         } catch (ApiException e) {
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            Log.e(TAG, "signInResult:failed code=" + e.getStatusCode(), e);
         }
     }
 
@@ -87,27 +112,31 @@ public class LoginActivity extends AppCompatActivity {
     private void requestJWTToken(String idToken) {
         OkHttpClient client = new OkHttpClient();
 
+        String url = "https://dev.cloudinteractive.net"; // 서버의 유효한 URL로 설정
+
         Request request = new Request.Builder()
-                .url("")  // 서버의 URL을 입력
+                .url(url)
                 .addHeader("Authorization", "Bearer " + idToken)
                 .build();
 
-        // 네트워크 작업은 별도의 스레드에서 처리해야 함
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Response response = client.newCall(request).execute();
                     if (response.isSuccessful() && response.body() != null) {
-                        // 서버에서 반환된 JWT 토큰을 파싱
                         String responseData = response.body().string();
                         JSONObject json = new JSONObject(responseData);
                         String jwtToken = json.getString("jwtToken");
 
                         Log.d(TAG, "JWT Token: " + jwtToken);
 
-                        // 필요에 따라 SharedPreferences에 JWT 토큰을 저장하거나 사용 가능
-                        // 예: SharedPreferences에 저장
+                        // JWT 토큰을 SharedPreferences에 저장
+                        SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("idToken", idToken);  // ID 토큰 저장
+                        editor.putString("jwtToken", jwtToken); // JWT 토큰 저장
+                        editor.apply();  // 변경사항 저장
 
                     } else {
                         Log.e(TAG, "JWT 요청 실패");
