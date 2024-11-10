@@ -46,19 +46,9 @@ public class LoginActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        // 자동 로그인 처리
-        SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
-        String idToken = prefs.getString("idToken", null);
-        if (idToken != null) {
-            // 이미 로그인된 경우 MainActivity로 이동
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();  // 현재 LoginActivity 종료
-        }
-
         // GoogleSignInOptions 설정
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("62636819993-5u032t1ep4oo7l729tbof8u3o6g800ma.apps.googleusercontent.com")
+                .requestIdToken(getString(R.string.google_cloud_console_id))
                 .requestEmail()
                 .build();
 
@@ -149,7 +139,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         Log.d(TAG, "JWT Token: " + jwtToken);
 
-                        // JWT 토큰을 SharedPreferences에 저장
                         SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putString("idToken", idToken);  // ID 토큰 저장
