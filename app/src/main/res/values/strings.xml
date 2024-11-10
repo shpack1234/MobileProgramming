@@ -1,3 +1,4 @@
 <resources>
-    <string name="AppTitle">냉장고+</string>
+    <string name="app_title">냉장고+</string>
+    <string name="app_short_title">냉장고</string>
 </resources>
