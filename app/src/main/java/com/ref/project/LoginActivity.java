@@ -4,17 +4,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+
+
+import androidx.activity.EdgeToEdge;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
@@ -23,8 +29,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import org.json.JSONObject;
-
 import java.io.IOException;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
         // 자동 로그인 처리
@@ -69,12 +78,21 @@ public class LoginActivity extends AppCompatActivity {
         );
 
         // 로그인 버튼 클릭 이벤트
-        Button signInButton = findViewById(R.id.btn_google_sign_in);
-        signInButton.setOnClickListener(v -> signIn());
+        SignInButton signInButton = findViewById(R.id.login_google_signIn_btn);
+        signInButton.setOnClickListener(v -> onClickSignInBtn());
+
+        // ToS 텍스트 클릭 이벤트
+        findViewById(R.id.login_tos_btn).setOnClickListener(v -> onClickTosText());
+    }
+
+    // 사용 약관 페이지
+    private void onClickTosText(){
+        Intent intent = new Intent(this, TosActivity.class);
+        this.startActivity(intent);
     }
 
     // 로그인 시작 메서드
-    private void signIn() {
+    private void onClickSignInBtn() {
         Log.d("Notion", "Login Start...");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         googleSignInLauncher.launch(signInIntent); // ActivityResultLauncher 사용
