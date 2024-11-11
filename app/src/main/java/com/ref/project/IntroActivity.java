@@ -36,33 +36,36 @@ public class IntroActivity extends AppCompatActivity {
         });
 
         boolean autoSignIn = signInManager.GetAutoSignIn();
-        final boolean[] state = new boolean[1];
-
         if(autoSignIn) {
-            signInManager.SignInRequestAsync(true, new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+            signInManager.SignInRequestAsync(this,true, new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
                 @Override
                 public void onResult(GetCredentialResponse getCredentialResponse) {
-                    state[0] = true;
+                    endIntro(true);
                 }
 
                 @Override
                 public void onError(@NonNull GetCredentialException e) {
-                    state[0] = false;
+                    endIntro(false);
                 }
             });
         }
+        else {
+            new Handler().postDelayed(new Runnable(){
+                @Override
+                public void run(){
+                    endIntro(false);
+                }
+            }, 1800);
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent;
-                if (!state[0] || !autoSignIn) intent = new Intent(getApplicationContext(), LoginActivity.class);
-                else intent = new Intent(getApplicationContext(), MainActivity.class);
+        }
+    }
 
-                startActivity(intent);
-                finish();
-            }
-        }, 1800);
+    private void endIntro(boolean state){
+        Intent intent;
+        if (!state) intent = new Intent(getApplicationContext(), LoginActivity.class);
+        else intent = new Intent(getApplicationContext(), MainActivity.class);
+
+        startActivity(intent);
+        finish();
     }
 }

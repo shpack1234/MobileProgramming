@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // Google Sign-in button click event
     private void onClickSignInBtn() {
-        signInManager.SignInRequestAsync(false, new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+        signInManager.SignInRequestAsync(this, false, new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
             @Override
             public void onResult(GetCredentialResponse getCredentialResponse) {
                 signInManager.SetAutoSignIn(true);

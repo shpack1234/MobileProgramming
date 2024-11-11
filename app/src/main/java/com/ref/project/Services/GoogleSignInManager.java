@@ -60,7 +60,7 @@ public class GoogleSignInManager {
         Log.d(TAG, "Set autoSignIn=" + state);
     }
 
-    public void SignInRequestAsync(boolean autoSelect, CredentialManagerCallback<GetCredentialResponse, GetCredentialException> callback){
+    public void SignInRequestAsync(Context c, boolean autoSelect, CredentialManagerCallback<GetCredentialResponse, GetCredentialException> callback){
         GetGoogleIdOption option = new GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
                 .setServerClientId(clientId)
@@ -72,8 +72,8 @@ public class GoogleSignInManager {
                 .build();
 
         // Google Sign-in using CredentialManager API.
-        CredentialManager credentialManager = CredentialManager.create(context);
-        credentialManager.getCredentialAsync(context, request, null, context.getMainExecutor(), new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+        CredentialManager credentialManager = CredentialManager.create(c);
+        credentialManager.getCredentialAsync(c, request, null, c.getMainExecutor(), new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
             @Override
             public void onResult(GetCredentialResponse getCredentialResponse) {
                 String token = GoogleIdTokenCredential.createFrom(getCredentialResponse.getCredential().getData()).getIdToken();
