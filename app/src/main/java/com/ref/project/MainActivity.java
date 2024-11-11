@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.ref.project.data.RequestJWTAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,9 +30,23 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", "No user is logged in");
         }
 
+        Button jwtButton=findViewById(R.id.btn_jwt);
+        jwtButton.setOnClickListener(v -> getjwt(idToken));
+
         // 로그아웃 버튼 클릭 이벤트
-        Button logoutButton = findViewById(R.id.btn_logout);
-        logoutButton.setOnClickListener(v -> logout());
+        //Button logoutButton = findViewById(R.id.btn_logout);
+        //logoutButton.setOnClickListener(v -> logout());
+    }
+
+    private void getjwt(String idToken) {
+        Log.d("IDTOKEN", idToken);
+        RequestJWTAdapter jwtAdapter=new RequestJWTAdapter(MainActivity.this);
+        String jwtToken=jwtAdapter.requestJWTToken(idToken);
+        if(jwtToken!=null) {
+            Log.d("Token Request", jwtToken);
+        } else {
+            Log.e("Token Err", "failed to get JWTToken");
+        }
     }
 
     // 로그아웃 처리 메서드
