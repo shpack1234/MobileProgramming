@@ -147,32 +147,6 @@ public class LoginActivity extends AppCompatActivity {
                 .url(url)
                 .addHeader("Authorization", "Bearer " + idToken)
                 .build();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Response response = client.newCall(request).execute();
-                    if (response.isSuccessful() && response.body() != null) {
-                        String responseData = response.body().string();
-                        JSONObject json = new JSONObject(responseData);
-                        String jwtToken = json.getString("jwtToken");
-
-                        Log.d(TAG, "JWT Token: " + jwtToken);
-
-                        SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("idToken", idToken);  // ID 토큰 저장
-                        editor.putString("jwtToken", jwtToken); // JWT 토큰 저장
-                        editor.apply();
-
-                    } else {
-                        Log.e(TAG, "JWT 요청 실패");
-                    }
-                } catch (IOException | org.json.JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
+
 }
