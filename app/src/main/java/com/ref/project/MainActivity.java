@@ -8,9 +8,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.ref.project.data.RequestJWTAdapter;
+import com.ref.project.data.ServerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", "No user is logged in");
         }
 
-        Button jwtButton=findViewById(R.id.btn_jwt);
+        Button jwtButton = findViewById(R.id.btn_jwt);
         jwtButton.setOnClickListener(v -> getjwt(idToken));
 
         // 로그아웃 버튼 클릭 이벤트
@@ -39,14 +38,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getjwt(String idToken) {
-        Log.d("IDTOKEN", idToken);
-        RequestJWTAdapter jwtAdapter=new RequestJWTAdapter(MainActivity.this);
-        String jwtToken=jwtAdapter.requestJWTToken(idToken);
-        if(jwtToken!=null) {
-            Log.d("Token Request", jwtToken);
-        } else {
-            Log.e("Token Err", "failed to get JWTToken");
-        }
+        ServerAdapter serverAdapter = ServerAdapter.getInstance(MainActivity.this);
+        serverAdapter.requestJWTToken(idToken, new ServerAdapter.JWTCallback() {
+            @Override
+            public void onSuccess(String jwtToken) {
+                Log.e("JWT SUCCESS", "토큰 발급 성공, 토큰 : "+ jwtToken);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.e("JWT FAIL", "토큰 발급 실패");
+            }
+        });
+
     }
 
     // 로그아웃 처리 메서드
