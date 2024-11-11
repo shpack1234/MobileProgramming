@@ -1,79 +1,28 @@
 package com.ref.project;
 
-import com.ref.project.ServerConnector.ServerAdapter;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-
-import android.view.View;
-import android.widget.Button;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-
-
 import androidx.activity.EdgeToEdge;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
-
-import dagger.hilt.android.AndroidEntryPoint;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-import org.json.JSONObject;
-import java.io.IOException;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-
+import com.ref.project.Services.GoogleSignInManager;
 import javax.inject.Inject;
+import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
-
-    private GoogleSignInClient mGoogleSignInClient;
-    private static final String TAG = "LoginActivity";
-    private ActivityResultLauncher<Intent> googleSignInLauncher;
-
     @Inject
-    ServerAdapter adapter;
+    GoogleSignInManager signInManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
-
-        // GoogleSignInOptions 설정
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.google_cloud_console_id))
-                .requestEmail()
-                .build();
-
-
-        // GoogleSignInClient 초기화
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        // ActivityResultLauncher 초기화
-        googleSignInLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                        handleSignInResult(task);
-                    }
-                }
-        );
 
         // 로그인 버튼 클릭 이벤트
         SignInButton signInButton = findViewById(R.id.login_google_signIn_btn);
@@ -83,83 +32,28 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.login_tos_btn).setOnClickListener(v -> onClickTosText());
     }
 
-    // 사용 약관 페이지
+    // Terms of Services page
     private void onClickTosText(){
         Intent intent = new Intent(this, TosActivity.class);
         this.startActivity(intent);
     }
 
-    // 로그인 시작 메서드
+    // Google Sign-in button click event
     private void onClickSignInBtn() {
-        Log.d("Notion", "Login Start...");
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        googleSignInLauncher.launch(signInIntent); // ActivityResultLauncher 사용
-    }
-
-    // 로그인 결과 처리 메서드
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            String idToken = account.getIdToken();
-
-            if (idToken != null) {
-                Log.d(TAG, "ID Token: " + idToken); // ID 토큰 로그
-                requestJWTToken(idToken); // JWT 토큰 요청
-
-                SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("idToken", idToken);  // ID 토큰 저장
-                editor.apply();
-
-                // 로그인 성공 후 MainActivity로 이동
+        signInManager.SignInRequestAsync(false, new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+            @Override
+            public void onResult(GetCredentialResponse getCredentialResponse) {
+                signInManager.SetAutoSignIn(true);
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
-            } else {
-                Log.e(TAG, "ID Token is null");
             }
 
-        } catch (ApiException e) {
-            Log.e(TAG, "signInResult:failed code=" + e.getStatusCode(), e);
-        }
-    }
-
-    // 서버에 ID 토큰을 보내고 JWT 토큰을 요청하는 메서드
-    private void requestJWTToken(String idToken) {
-        OkHttpClient client = new OkHttpClient();
-
-        String url = "https://dev.cloudinteractive.net"; // 서버의 유효한 URL로 설정
-
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("Authorization", "Bearer " + idToken)
-                .build();
-
-        new Thread(new Runnable() {
             @Override
-            public void run() {
-                try {
-                    Response response = client.newCall(request).execute();
-                    if (response.isSuccessful() && response.body() != null) {
-                        String responseData = response.body().string();
-                        JSONObject json = new JSONObject(responseData);
-                        String jwtToken = json.getString("jwtToken");
+            public void onError(@NonNull GetCredentialException e) {
 
-                        Log.d(TAG, "JWT Token: " + jwtToken);
-
-                        SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("idToken", idToken);  // ID 토큰 저장
-                        editor.putString("jwtToken", jwtToken); // JWT 토큰 저장
-                        editor.apply();  // 변경사항 저장
-
-                    } else {
-                        Log.e(TAG, "JWT 요청 실패");
-                    }
-                } catch (IOException | org.json.JSONException e) {
-                    e.printStackTrace();
-                }
             }
-        }).start();
+        });
     }
+
 }

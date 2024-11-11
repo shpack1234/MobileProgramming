@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.ref.project"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.ref.project"
@@ -33,14 +33,24 @@ android {
     }
 }
 
+secrets{
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
+
+    ignoreList.add("sdk.*")
+}
+
 dependencies {
     implementation(libs.hilt.android)
+    implementation(libs.googleid)
     annotationProcessor(libs.hilt.compiler)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.play.services.auth)
+    implementation("androidx.credentials:credentials:1.5.0-alpha05")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0-alpha05")
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     testImplementation(libs.junit)

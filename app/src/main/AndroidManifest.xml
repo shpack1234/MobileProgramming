@@ -20,6 +20,14 @@
         android:theme="@style/Theme.MPTeamProject"
         android:name=".FridgePlusApp"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.ref.project.API_ENDPOINT"
+            android:value="${API_ENDPOINT}"/>
+        <meta-data
+            android:name="com.ref.project.GOOGLE_CLIENT_ID"
+            android:value="${GOOGLE_CLIENT_ID}"/>
+
         <activity
             android:name=".TosActivity"
             android:exported="false" />

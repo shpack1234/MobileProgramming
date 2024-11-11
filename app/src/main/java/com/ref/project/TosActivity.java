@@ -8,7 +8,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.ref.project.Services.ServerAdapter;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class TosActivity extends AppCompatActivity {
+    @Inject
+    ServerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
