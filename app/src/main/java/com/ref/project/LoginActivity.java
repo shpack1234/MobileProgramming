@@ -1,5 +1,6 @@
 package com.ref.project;
 
+import com.ref.project.ServerConnector.ServerAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import dagger.hilt.android.AndroidEntryPoint;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -33,12 +35,17 @@ import java.io.IOException;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import javax.inject.Inject;
 
+@AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "LoginActivity";
     private ActivityResultLauncher<Intent> googleSignInLauncher;
+
+    @Inject
+    ServerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.google_cloud_console_id))
                 .requestEmail()
                 .build();
+
 
         // GoogleSignInClient 초기화
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
