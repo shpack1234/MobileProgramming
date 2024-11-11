@@ -52,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
+        silentSignIn();
+
         // GoogleSignInClient 초기화
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
@@ -62,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                        handleSignInResult(task);
+                        handleSignInResult(task.getResult());
                     }
                 }
         );
@@ -89,9 +91,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // 로그인 결과 처리 메서드
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+    private void handleSignInResult(GoogleSignInAccount account) {
         try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String idToken = account.getIdToken();
 
             if (idToken != null) {
@@ -100,27 +101,47 @@ public class LoginActivity extends AppCompatActivity {
 
                 SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("idToken", idToken);  // ID 토큰 저장
+                editor.putString("idToken", idToken);
                 editor.apply();
 
-                // 로그인 성공 후 MainActivity로 이동
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             } else {
                 Log.e(TAG, "ID Token is null");
             }
-
-        } catch (ApiException e) {
-            Log.e(TAG, "signInResult:failed code=" + e.getStatusCode(), e);
+        } catch (Exception e) {
+            Log.e(TAG, "signInResult:failed", e);
         }
     }
+
+
+    private void silentSignIn() {
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if (account != null) {
+            Log.d(TAG, "자동 로그인 시도");
+            mGoogleSignInClient.silentSignIn().addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()) {
+                    GoogleSignInAccount silentAccount = task.getResult();
+
+                    if (silentAccount != null) {
+                        handleSignInResult(silentAccount);
+                    } else {
+                        Log.e(TAG, "silentSignIn: GoogleSignInAccount is null despite task success");
+                    }
+                } else {
+                    Log.d(TAG, "자동 로그인 실패, 수동 로그인 필요");
+                }
+            });
+        }
+    }
+
 
     // 서버에 ID 토큰을 보내고 JWT 토큰을 요청하는 메서드
     private void requestJWTToken(String idToken) {
         OkHttpClient client = new OkHttpClient();
 
-        String url = "https://dev.cloudinteractive.net"; // 서버의 유효한 URL로 설정
+        String url = "https://dev.cloudinteractive.net";
 
         Request request = new Request.Builder()
                 .url(url)
@@ -143,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putString("idToken", idToken);  // ID 토큰 저장
                         editor.putString("jwtToken", jwtToken); // JWT 토큰 저장
-                        editor.apply();  // 변경사항 저장
+                        editor.apply();
 
                     } else {
                         Log.e(TAG, "JWT 요청 실패");
