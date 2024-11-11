@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.androidApplication)
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -32,7 +33,8 @@ android {
 }
 
 dependencies {
-
+    implementation("com.google.dagger:hilt-android:2.52")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.52")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
