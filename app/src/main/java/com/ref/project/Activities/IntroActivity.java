@@ -1,4 +1,4 @@
-package com.ref.project;
+package com.ref.project.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 
+import com.ref.project.R;
 import com.ref.project.Services.GoogleSignInManager;
-import com.ref.project.Services.ServerAdapter;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import jakarta.inject.Inject;

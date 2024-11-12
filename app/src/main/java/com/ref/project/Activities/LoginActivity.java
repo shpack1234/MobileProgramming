@@ -1,4 +1,4 @@
-package com.ref.project;
+package com.ref.project.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import com.google.android.gms.common.SignInButton;
+import com.ref.project.R;
 import com.ref.project.Services.GoogleSignInManager;
 
 import javax.inject.Inject;

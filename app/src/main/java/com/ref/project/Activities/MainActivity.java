@@ -1,8 +1,7 @@
-package com.ref.project;
+package com.ref.project.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,6 +11,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.exceptions.ClearCredentialException;
+
+import com.ref.project.Models.AccountInfoModel;
+import com.ref.project.Models.ItemListModel;
+import com.ref.project.R;
 import com.ref.project.Services.GoogleSignInManager;
 import com.ref.project.Services.ServerAdapter;
 
@@ -39,9 +42,33 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.main_signout_btn).setOnClickListener(v -> SignOut());
 
         // 백엔드 토큰 로그온
-        serverAdapter.TokenSignIn(signInManager.GetIdToken(), new ServerAdapter.ITokenSignInCallback() {
+        serverAdapter.TokenSignInAsync(signInManager.GetIdToken(), new ServerAdapter.ITokenSignInCallback() {
             @Override
             public void onSuccess() {
+
+                serverAdapter.GetAccountInfoAsync(new ServerAdapter.IServerRequestCallback<AccountInfoModel>() {
+                    @Override
+                    public void onSuccess(AccountInfoModel result) {
+
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+
+                serverAdapter.GetItemListAsync(new ServerAdapter.IServerRequestCallback<ItemListModel>() {
+                    @Override
+                    public void onSuccess(ItemListModel result) {
+                        int i = 90;
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
 
             }
 
@@ -64,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResult(Void unused) {
                 signInManager.SetAutoSignIn(false);
-                Intent intent = new Intent(MainActivity.this, com.ref.project.LoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }

@@ -8,7 +8,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".IntroActivity">
+    tools:context=".Activities.IntroActivity">
 
     <LinearLayout
         android:id="@+id/intro_logo"
