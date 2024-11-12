@@ -14,6 +14,8 @@
     
 ## Overview
 - Scalable 3-Tier Architecture
+- Implemented with Dependency Injection patterns
+- Asynchronous Server I/O
 - Authenticate with a backend server using Google SSO
 
 ## Dependencies
