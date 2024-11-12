@@ -1,4 +1,4 @@
-package com.ref.project;
+package com.ref.project.Activities;
 
 import android.os.Bundle;
 
@@ -8,28 +8,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.ref.project.Services.ServerAdapter;
+import com.ref.project.R;
 
-import javax.inject.Inject;
-
-import dagger.hilt.android.AndroidEntryPoint;
-
-@AndroidEntryPoint
-public class TosActivity extends AppCompatActivity {
-    @Inject
-    ServerAdapter adapter;
+public class AddItemsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_tos);
+        setContentView(R.layout.activity_add_items);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        findViewById(R.id.tos_back_btn).setOnClickListener(v -> finish());
     }
 }

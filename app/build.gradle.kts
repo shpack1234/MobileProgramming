@@ -41,6 +41,10 @@ secrets{
 }
 
 dependencies {
+    implementation(libs.jackson.core)
+    implementation(libs.jackson.databind)
+    implementation(libs.jackson.annotations)
+    implementation(libs.okhttp.urlconnection)
     implementation(libs.hilt.android)
     implementation(libs.googleid)
     annotationProcessor(libs.hilt.compiler)
@@ -51,8 +55,6 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.credentials)
     implementation(libs.credentials.play.services.auth)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
