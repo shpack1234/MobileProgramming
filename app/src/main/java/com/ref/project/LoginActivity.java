@@ -2,7 +2,6 @@ package com.ref.project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -15,7 +14,6 @@ import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import com.google.android.gms.common.SignInButton;
 import com.ref.project.Services.GoogleSignInManager;
-import com.ref.project.Services.ServerAdapter;
 
 import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
