@@ -1,5 +1,6 @@
 [versions]
-agp = "8.3.0"
+agp = "8.6.0"
+credentials = "1.5.0-beta01"
 hiltCompiler = "2.52"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -15,6 +16,8 @@ googleid = "1.1.1"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
+credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltCompiler" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltCompiler" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
