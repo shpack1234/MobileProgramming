@@ -11,16 +11,23 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.view.animation.ScaleAnimation;
 
 import androidx.annotation.NonNull;
+import androidx.credentials.ClearCredentialStateRequest;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.ClearCredentialException;
 import androidx.credentials.exceptions.GetCredentialException;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
 
 public class GoogleSignInManager {
     private static final String TAG = "GoogleSignInManager";
@@ -87,6 +94,23 @@ public class GoogleSignInManager {
                 callback.onError(e);
             }
 
+        });
+    }
+
+    public void SignOutAsync(Context c, CredentialManagerCallback<Void, ClearCredentialException> callback){
+        CredentialManager credentialManager = CredentialManager.create(c);
+        credentialManager.clearCredentialStateAsync(new ClearCredentialStateRequest(ClearCredentialStateRequest.TYPE_CLEAR_CREDENTIAL_STATE), null, c.getMainExecutor(), new CredentialManagerCallback<Void, ClearCredentialException>() {
+            @Override
+            public void onResult(Void unused) {
+                Log.d(TAG, "Successfully signed out.");
+                callback.onResult(null);
+            }
+
+            @Override
+            public void onError(@NonNull ClearCredentialException e) {
+                Log.e(TAG, "Sign-out Exception!", e);
+                callback.onError(e);
+            }
         });
     }
 }
