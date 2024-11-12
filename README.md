@@ -17,3 +17,17 @@
 - Authenticate with a backend server using Google SSO
 
 ## Dependencies
+- **lib.jackson.core**
+- **lib.jackson.databind**
+- **lib.jackson.annotations**
+- **lib.okhttp.urlconnection**
+- **lib.hilt.android**
+- **libs.hilt.compiler**
+- **libs.googleid**
+- **libs.appcompat**
+- **libs.material**
+- **libs.activity**
+- **libs.constraintlayout**
+- **libs.play.services.auth**
+- **libs.credentials**
+- **libs.credentials.play.services.auth**
