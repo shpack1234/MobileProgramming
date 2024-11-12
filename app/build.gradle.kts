@@ -55,8 +55,6 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.credentials)
     implementation(libs.credentials.play.services.auth)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
