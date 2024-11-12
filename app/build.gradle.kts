@@ -41,10 +41,10 @@ secrets{
 }
 
 dependencies {
-    implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.15.2")
-    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.1")
+    implementation(libs.jackson.core)
+    implementation(libs.jackson.databind)
+    implementation(libs.jackson.annotations)
+    implementation(libs.okhttp.urlconnection)
     implementation(libs.hilt.android)
     implementation(libs.googleid)
     annotationProcessor(libs.hilt.compiler)
