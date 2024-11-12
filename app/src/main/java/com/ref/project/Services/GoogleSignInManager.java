@@ -25,6 +25,8 @@ import androidx.credentials.exceptions.GetCredentialException;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
+import java.util.Arrays;
+
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
@@ -34,6 +36,7 @@ public class GoogleSignInManager {
 
     private final Context context;
     private final String clientId;
+    private String idToken;
 
     public GoogleSignInManager(Context c){
         Log.d(TAG, "init..");
@@ -67,9 +70,11 @@ public class GoogleSignInManager {
         Log.d(TAG, "Set autoSignIn=" + state);
     }
 
+    public String GetIdToken(){ return idToken; }
+
     public void SignInRequestAsync(Context c, boolean autoSelect, CredentialManagerCallback<GetCredentialResponse, GetCredentialException> callback){
         GetGoogleIdOption option = new GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
+                .setFilterByAuthorizedAccounts(autoSelect)
                 .setServerClientId(clientId)
                 .setAutoSelectEnabled(autoSelect)
                 .build();
@@ -83,14 +88,14 @@ public class GoogleSignInManager {
         credentialManager.getCredentialAsync(c, request, null, c.getMainExecutor(), new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
             @Override
             public void onResult(GetCredentialResponse getCredentialResponse) {
-                String token = GoogleIdTokenCredential.createFrom(getCredentialResponse.getCredential().getData()).getIdToken();
-                Log.d(TAG, "Authenticated. (Token: " + token + ")");
+                idToken = GoogleIdTokenCredential.createFrom(getCredentialResponse.getCredential().getData()).getIdToken();
+                Log.d(TAG, "Authenticated. (Token: " + idToken + ")");
                 callback.onResult(getCredentialResponse);
             }
 
             @Override
             public void onError(@NonNull GetCredentialException e) {
-                Log.e(TAG, "Authentication failed!", e);
+                Log.e(TAG, "Authentication Exception!\n" + e);
                 callback.onError(e);
             }
 
@@ -108,7 +113,7 @@ public class GoogleSignInManager {
 
             @Override
             public void onError(@NonNull ClearCredentialException e) {
-                Log.e(TAG, "Sign-out Exception!", e);
+                Log.e(TAG, "Sign-out Exception!\n" + e);
                 callback.onError(e);
             }
         });
