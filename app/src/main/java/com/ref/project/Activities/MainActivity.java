@@ -46,30 +46,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
 
-                serverAdapter.GetAccountInfoAsync(new ServerAdapter.IServerRequestCallback<AccountInfoModel>() {
-                    @Override
-                    public void onSuccess(AccountInfoModel result) {
-
-                    }
-
-                    @Override
-                    public void onFailure() {
-
-                    }
-                });
-
-                serverAdapter.GetItemListAsync(new ServerAdapter.IServerRequestCallback<ItemListModel>() {
-                    @Override
-                    public void onSuccess(ItemListModel result) {
-                        int i = 90;
-                    }
-
-                    @Override
-                    public void onFailure() {
-
-                    }
-                });
-
             }
 
             @Override

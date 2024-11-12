@@ -51,12 +51,7 @@ public class IntroActivity extends AppCompatActivity {
             });
         }
         else {
-            new Handler().postDelayed(new Runnable(){
-                @Override
-                public void run(){
-                    endIntro(false);
-                }
-            }, 1800);
+            new Handler().postDelayed(() -> endIntro(false), 1800);
 
         }
     }
