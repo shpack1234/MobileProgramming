@@ -1,25 +1,60 @@
 package com.ref.project;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.ClearCredentialException;
+import com.ref.project.Services.GoogleSignInManager;
+import com.ref.project.Services.ServerAdapter;
+
+import javax.inject.Inject;
+import dagger.hilt.android.AndroidEntryPoint;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.ref.project.data.ServerAdapter;
 
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
+    @Inject
+    GoogleSignInManager signInManager;
 
-    private GoogleSignInClient mGoogleSignInClient;
+    @Inject
+    ServerAdapter serverAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 로그아웃 버튼 클릭 이벤트
+        Button logoutButton = findViewById(R.id.btn_logout);
+        logoutButton.setOnClickListener(v -> SignOut());
+
+        // 백엔드 토큰 로그온
+        serverAdapter.TokenSignIn(signInManager.GetIdToken(), new ServerAdapter.ITokenSignInCallback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "API 서비스에 문제가 있습니다.", Toast.LENGTH_LONG).show();
+                        SignOut();
+                    }
+                });
+
+            }
+        });
         // 로그인된 ID 토큰 가져오기
         SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
         String idToken = prefs.getString("idToken", null);
@@ -54,19 +89,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 로그아웃 처리 메서드
-    private void logout() {
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
-            // SharedPreferences에서 로그인 정보 삭제
-            SharedPreferences prefs = getSharedPreferences("appPrefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.remove("idToken");
-            editor.remove("jwtToken");
-            editor.apply();
+    private void SignOut() {
+        signInManager.SignOutAsync(this, new CredentialManagerCallback<Void, ClearCredentialException>() {
+            @Override
+            public void onResult(Void unused) {
+                signInManager.SetAutoSignIn(false);
+                Intent intent = new Intent(MainActivity.this, com.ref.project.LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
 
-            // LoginActivity로 이동
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();  // 현재 MainActivity 종료
+            @Override
+            public void onError(@NonNull ClearCredentialException e) {
+
+            }
         });
     }
 }
