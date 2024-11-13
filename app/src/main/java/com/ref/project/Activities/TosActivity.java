@@ -11,10 +11,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.ref.project.R;
-import com.ref.project.Services.ServerAdapter;
 import com.ref.project.Views.TitleBar;
-
-import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
