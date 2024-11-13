@@ -11,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.ref.project.R;
 
 public class AddItemsActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

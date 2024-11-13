@@ -7,4 +7,51 @@
     android:layout_height="match_parent"
     tools:context=".Activities.AddItemsActivity">
 
+    <com.ref.project.Views.TitleBar
+        android:id="@+id/addItemTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/additems_title" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/addItemsImportBtn"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_weight="1"
+        android:background="@drawable/additems_import_btn_background"
+        android:drawableEnd="@drawable/stars_icon"
+        android:fontFamily="@font/pretendard"
+        android:minHeight="0dp"
+        android:padding="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="@string/additems_import"
+        android:textColor="@color/white"
+        android:textFontWeight="400"
+        app:layout_constraintBottom_toTopOf="@+id/addItemsSubmitBtn"
+        app:layout_constraintEnd_toEndOf="@+id/addItemsSubmitBtn" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/addItemsSubmitBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/additems_submit_btn_background"
+        android:fontFamily="@font/pretendard"
+        android:minHeight="0dp"
+        android:padding="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="@string/additems_submit"
+        android:textColor="@color/white"
+        android:textFontWeight="700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
