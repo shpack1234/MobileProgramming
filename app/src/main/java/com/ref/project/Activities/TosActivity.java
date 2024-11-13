@@ -1,6 +1,8 @@
 package com.ref.project.Activities;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.ref.project.R;
 import com.ref.project.Services.ServerAdapter;
+import com.ref.project.Views.TitleBar;
 
 import javax.inject.Inject;
 
@@ -17,9 +20,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class TosActivity extends AppCompatActivity {
-    @Inject
-    ServerAdapter adapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +31,7 @@ public class TosActivity extends AppCompatActivity {
             return insets;
         });
 
-        findViewById(R.id.tos_back_btn).setOnClickListener(v -> finish());
+        ((TitleBar)findViewById(R.id.tosTitleBar)).setOnBackListener(v -> finish());
+        ((TextView)findViewById(R.id.tosBodyText)).setMovementMethod(new ScrollingMovementMethod());
     }
 }
