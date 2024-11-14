@@ -40,8 +40,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import jakarta.inject.Inject;
@@ -83,39 +81,35 @@ public class AddItemsActivity extends AppCompatActivity {
 
         captureImageResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult o) {
-                        if(o.getResultCode() == Activity.RESULT_OK){
-                            try{
-                                ImportLoadingDialog dialog = new ImportLoadingDialog();
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(AddItemsActivity.this.getContentResolver(), captureImageFileUri);
-                                byte[] imageBytes = bitmapToByteArray(bitmap);
-                                dialog.show(getSupportFragmentManager(), "importLoadingDialog");
-                                serverAdapter.ImportFromReceiptAsync(imageBytes, new ServerAdapter.IServerRequestCallback<ReceiptModel>() {
-                                    @Override
-                                    public void onSuccess(ReceiptModel result) {
-                                        for(ReceiptItemModel x : result.Items) {
-                                            list.add(x.ItemDescription + " - " + x.ItemQuantity + "개");
-                                        }
-
-                                        uiThreadHandler.post(() -> {
-                                            adapter.notifyDataSetChanged();
-                                        });
-                                        dialog.dismiss();
+                o -> {
+                    if(o.getResultCode() == Activity.RESULT_OK){
+                        try{
+                            if(o.getData() != null) captureImageFileUri = o.getData().getData();
+                            ImportLoadingDialog dialog = new ImportLoadingDialog();
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(AddItemsActivity.this.getContentResolver(), captureImageFileUri);
+                            byte[] imageBytes = bitmapToByteArray(bitmap);
+                            dialog.show(getSupportFragmentManager(), "importLoadingDialog");
+                            serverAdapter.ImportFromReceiptAsync(imageBytes, new ServerAdapter.IServerRequestCallback<ReceiptModel>() {
+                                @Override
+                                public void onSuccess(ReceiptModel result) {
+                                    for(ReceiptItemModel x : result.Items) {
+                                        list.add(x.ItemDescription + " - " + x.ItemQuantity + "개");
                                     }
 
-                                    @Override
-                                    public void onFailure() {
-                                        dialog.dismiss();
-                                        Toast.makeText(AddItemsActivity.this, "요청에 실패하였습니다.", Toast.LENGTH_LONG).show();
-                                    }
-                                });
+                                    uiThreadHandler.post(() -> adapter.notifyDataSetChanged());
+                                    dialog.dismiss();
+                                }
 
-                            }
-                            catch (Exception e){
-                                Log.e(TAG, "captureImageActivityResultCallback Exception!\n"+e);
-                            }
+                                @Override
+                                public void onFailure() {
+                                    dialog.dismiss();
+                                    uiThreadHandler.post(()-> Toast.makeText(AddItemsActivity.this, "요청에 실패하였습니다.", Toast.LENGTH_LONG).show());
+                                }
+                            });
+
+                        }
+                        catch (Exception e){
+                            Log.e(TAG, "captureImageActivityResultCallback Exception!\n"+e);
                         }
                     }
                 });
@@ -142,17 +136,17 @@ public class AddItemsActivity extends AppCompatActivity {
         dialog.show(getSupportFragmentManager(), "importLoadingDialog");
     }
 
-    private void Test() {
-    }
 
     private void importFromReceipt(){
         new AlertDialog.Builder(this)
                 .setTitle("이미지 선택")
                 .setMessage("사진을 찍거나 갤러리에서 선택하세요.")
-                .setPositiveButton("사진 찍기", (dialog, which) -> Test())
-                .setNegativeButton("갤러리에서 선택", (dialog, which) -> Test())
+                .setPositiveButton("사진 찍기", (dialog, which) -> captureCamera())
+                .setNegativeButton("갤러리에서 선택", (dialog, which) -> selectFromGallery())
                 .show();
+    }
 
+    private void captureCamera(){
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if(intent.resolveActivity(getPackageManager()) != null){
@@ -174,13 +168,36 @@ public class AddItemsActivity extends AppCompatActivity {
 
             }
             catch(Exception e){
-                Log.e(TAG, "importFromReceipt Exception!\n" + e);
+                Log.e(TAG, "captureCamera Exception!\n" + e);
             }
         }
         else
         {
-            Log.w(TAG, "Camera resolveActivity failed!");
+            Log.w(TAG, "ACTION_IMAGE_CAPTURE resolveActivity failed!");
         }
+    }
+
+    private void selectFromGallery(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_PICK);
+
+        if(intent.resolveActivity(getPackageManager()) != null) {
+            try {
+                if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                    ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    }, 0);
+                captureImageResultLauncher.launch(intent);
+            }
+            catch (Exception e) {
+                Log.e(TAG, "selectFromGallery Exception!\n" + e);
+            }
+        }
+        else{
+            Log.w(TAG, "ACTION_PICK_IMAGES resolveActivity failed!");
+        }
+
 
     }
 }
