@@ -14,17 +14,37 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/additems_title" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addItemsAddBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/additems_add_btn_background"
+        android:contentDescription="@string/additems_add"
+        android:drawablePadding="10dp"
+        android:padding="0dp"
+        app:backgroundTint="@null"
+        app:backgroundTintMode="add"
+        app:icon="@drawable/add_icon"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/addItemsSubmitBtn"
+        app:layout_constraintEnd_toEndOf="@+id/addItemsSubmitBtn"
+        tools:ignore="TouchTargetSizeCheck" />
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addItemsImportBtn"
-        android:layout_width="160dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
+        android:layout_marginEnd="5dp"
         android:layout_weight="1"
         android:background="@drawable/additems_import_btn_background"
         android:drawableEnd="@drawable/stars_icon"
+        android:drawablePadding="5dp"
         android:fontFamily="@font/pretendard"
-        android:minHeight="0dp"
+        android:minHeight="40dp"
         android:padding="10dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
@@ -32,7 +52,8 @@
         android:textColor="@color/white"
         android:textFontWeight="400"
         app:layout_constraintBottom_toTopOf="@+id/addItemsSubmitBtn"
-        app:layout_constraintEnd_toEndOf="@+id/addItemsSubmitBtn" />
+        app:layout_constraintEnd_toStartOf="@+id/addItemsAddBtn"
+        tools:ignore="TouchTargetSizeCheck" />
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -43,7 +64,7 @@
         android:layout_weight="1"
         android:background="@drawable/additems_submit_btn_background"
         android:fontFamily="@font/pretendard"
-        android:minHeight="0dp"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"

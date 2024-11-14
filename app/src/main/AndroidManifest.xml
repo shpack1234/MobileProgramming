@@ -9,6 +9,12 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.CAMERA_BUTTON"/>
+        </intent>
+    </queries>
+
     <application
         android:name=".FridgePlusApp"
         android:allowBackup="true"
@@ -50,6 +56,13 @@
         <activity
             android:name=".Activities.MainActivity"
             android:exported="true" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.ref.project.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+        </provider>
     </application>
 
 </manifest>

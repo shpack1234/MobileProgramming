@@ -14,5 +14,6 @@
 
     <string name="additems_title">새 식품 추가하기</string>
     <string name="additems_import">영수증 가져오기</string>
+    <string name="additems_add">새 레코드</string>
     <string name="additems_submit">완료</string>
 </resources>
