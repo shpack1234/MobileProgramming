@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tosActionBar"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     app:layout_constraintTop_toTopOf="parent"
@@ -34,6 +33,7 @@
         android:drawablePadding="0dp"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
+        android:contentDescription="@string/app_backbtn_description"
         android:drawableLeft="@drawable/back_icon"
         tools:ignore="RtlHardcoded">
     </Button>
