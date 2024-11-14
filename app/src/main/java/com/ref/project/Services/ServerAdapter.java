@@ -15,17 +15,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ref.project.Models.AccountInfoModel;
 import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.ItemListModel;
+import com.ref.project.Models.ReceiptItemModel;
+import com.ref.project.Models.ReceiptModel;
 
 import java.io.IOException;
 import java.net.CookieManager;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.JavaNetCookieJar;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ServerAdapter{
@@ -63,10 +69,12 @@ public class ServerAdapter{
 
         client = new OkHttpClient().newBuilder()
                 .cookieJar(new JavaNetCookieJar(new CookieManager()))
+                .readTimeout(80, TimeUnit.SECONDS)
                 .build();
     }
 
     private <T> void requestAsync(String taskName, Request request, Class<T> type, IServerRequestCallback<T> callback){
+        Log.d(TAG, "RequestAsync (" + taskName + "): Begin.");
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -157,4 +165,14 @@ public class ServerAdapter{
                 ItemListModel.class, callback);
     }
 
+    public void ImportFromReceiptAsync(byte[] image, IServerRequestCallback<ReceiptModel> callback){
+        requestAsync("ImportFromReceiptAsync",
+                new Request.Builder()
+                        .url(endpoint + "/api/intelligence/importFromReceipt")
+                        .post(new MultipartBody.Builder()
+                                .addFormDataPart("image", "image.jpg",
+                                        RequestBody.create(image)).setType(MultipartBody.FORM).build())
+                        .build(),
+                ReceiptModel.class, callback);
+    }
 }
