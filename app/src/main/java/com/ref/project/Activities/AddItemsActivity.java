@@ -7,16 +7,20 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.FileUtils;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,13 +29,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.ref.project.Models.ReceiptItemModel;
 import com.ref.project.Models.ReceiptModel;
 import com.ref.project.R;
 import com.ref.project.Services.ServerAdapter;
+import com.ref.project.Views.ImportLoadingDialog;
+import com.ref.project.Views.TitleBar;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import jakarta.inject.Inject;
@@ -44,6 +54,11 @@ public class AddItemsActivity extends AppCompatActivity {
     private static final String TAG = "AddItemsActivity";
     private ActivityResultLauncher<Intent> captureImageResultLauncher;
     private Uri captureImageFileUri;
+    private Handler uiThreadHandler;
+
+    private ListView listView;
+    private ArrayList<String> list = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +70,17 @@ public class AddItemsActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        uiThreadHandler = new Handler(Looper.getMainLooper());
 
+        ((TitleBar)findViewById(R.id.addItemTitle)).setOnBackListener(v -> finish());
         findViewById(R.id.addItemsImportBtn).setOnClickListener(v -> importFromReceipt());
+        findViewById(R.id.addItemsAddBtn).setOnClickListener(v -> addNewRecord());
+
+        listView = findViewById(R.id.addItemsListView);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
+        listView.setAdapter(adapter);
+        list.add("test");
+
         captureImageResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -64,17 +88,27 @@ public class AddItemsActivity extends AppCompatActivity {
                     public void onActivityResult(ActivityResult o) {
                         if(o.getResultCode() == Activity.RESULT_OK){
                             try{
+                                ImportLoadingDialog dialog = new ImportLoadingDialog();
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(AddItemsActivity.this.getContentResolver(), captureImageFileUri);
                                 byte[] imageBytes = bitmapToByteArray(bitmap);
+                                dialog.show(getSupportFragmentManager(), "importLoadingDialog");
                                 serverAdapter.ImportFromReceiptAsync(imageBytes, new ServerAdapter.IServerRequestCallback<ReceiptModel>() {
                                     @Override
                                     public void onSuccess(ReceiptModel result) {
-                                        int k =1;
+                                        for(ReceiptItemModel x : result.Items) {
+                                            list.add(x.ItemDescription + " - " + x.ItemQuantity + "개");
+                                        }
+
+                                        uiThreadHandler.post(() -> {
+                                            adapter.notifyDataSetChanged();
+                                        });
+                                        dialog.dismiss();
                                     }
 
                                     @Override
                                     public void onFailure() {
-
+                                        dialog.dismiss();
+                                        Toast.makeText(AddItemsActivity.this, "요청에 실패하였습니다.", Toast.LENGTH_LONG).show();
                                     }
                                 });
 
@@ -103,7 +137,22 @@ public class AddItemsActivity extends AppCompatActivity {
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
+    private void addNewRecord(){
+        ImportLoadingDialog dialog = new ImportLoadingDialog();
+        dialog.show(getSupportFragmentManager(), "importLoadingDialog");
+    }
+
+    private void Test() {
+    }
+
     private void importFromReceipt(){
+        new AlertDialog.Builder(this)
+                .setTitle("이미지 선택")
+                .setMessage("사진을 찍거나 갤러리에서 선택하세요.")
+                .setPositiveButton("사진 찍기", (dialog, which) -> Test())
+                .setNegativeButton("갤러리에서 선택", (dialog, which) -> Test())
+                .show();
+
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if(intent.resolveActivity(getPackageManager()) != null){
