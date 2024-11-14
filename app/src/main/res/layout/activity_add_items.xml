@@ -14,21 +14,36 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/additems_title" />
 
+    <com.ref.project.Views.InfoCard
+        android:id="@+id/addItemsInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/addItemTitle"
+        app:infoCardContent="수동으로 항목을 추가하거나, 영수증에서 자동으로 항목을 불러오십시오."
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:elevation="3dp"
+        app:infoCardIcon="@drawable/lightbulb_icon"/>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/addItemsAddBtn"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/additems_add_btn_background"
         android:contentDescription="@string/additems_add"
         android:drawablePadding="10dp"
         android:padding="0dp"
         app:backgroundTint="@null"
         app:backgroundTintMode="add"
+        style="@style/Widget.Material3.Button.ElevatedButton"
         app:icon="@drawable/add_icon"
         app:iconGravity="textStart"
         app:iconPadding="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/addItemsSubmitBtn"
+        app:iconTint="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/addItemsInfo"
         app:layout_constraintEnd_toEndOf="@+id/addItemsSubmitBtn"
         tools:ignore="TouchTargetSizeCheck" />
 
@@ -37,7 +52,7 @@
         android:id="@+id/addItemsImportBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="5dp"
         android:layout_weight="1"
         android:background="@drawable/additems_import_btn_background"
@@ -51,7 +66,7 @@
         android:text="@string/additems_import"
         android:textColor="@color/white"
         android:textFontWeight="400"
-        app:layout_constraintBottom_toTopOf="@+id/addItemsSubmitBtn"
+        app:layout_constraintTop_toBottomOf="@+id/addItemsInfo"
         app:layout_constraintEnd_toStartOf="@+id/addItemsAddBtn"
         tools:ignore="TouchTargetSizeCheck" />
 
