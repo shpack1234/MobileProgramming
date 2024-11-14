@@ -10,5 +10,5 @@ import java.util.List;
 
 public class ReceiptModel {
     @JsonProperty("items")
-    List<ReceiptItemModel> Items;
+    public List<ReceiptItemModel> Items;
 }
