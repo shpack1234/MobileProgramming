@@ -1,59 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
 
     <TextView
+        android:id="@+id/itemCategoryLabel"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/pretendard"
+        android:textFontWeight="700"
+        app:layout_constraintTop_toBottomOf="@+id/itemDescriptionLabel" />
+
+    <TextView
         android:id="@+id/itemDescriptionLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="4"
         android:layout_height="wrap_content"
         android:fontFamily="@font/pretendard"
-        android:text="Item Description"
+        android:layout_marginEnd="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/itemQuantityLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:fontFamily="@font/pretendard"
-        android:text="Quantity"
-        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintStart_toEndOf="@+id/itemDescriptionLabel"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/itemCategoryLabel"
-        android:layout_width="wrap_content"
+        android:id="@+id/itemExpiresLabel"
+        android:layout_width="0dp"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
-        android:text="Category"
         android:fontFamily="@font/pretendard"
-        android:textFontWeight="700"
-        app:layout_constraintTop_toBottomOf="@+id/itemDescriptionLabel" />
-
-    <ImageButton
-        android:id="@+id/ItemEditBtn"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="TODO"
-        android:src="@drawable/edit_icon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/itemDeleteBtn"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintStart_toEndOf="@+id/itemDescriptionLabel"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/itemDeleteBtn"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:id="@+id/itemActionBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@android:color/transparent"
-        android:contentDescription="TODO"
-        android:src="@drawable/close_icon"
+        android:contentDescription="@string/item_action_description"
+        android:src="@drawable/action_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
