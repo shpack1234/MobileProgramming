@@ -84,7 +84,7 @@ public class AddItemsActivity extends AppCompatActivity {
                 o -> {
                     if(o.getResultCode() == Activity.RESULT_OK){
                         try{
-                            if(o.getData() != null) captureImageFileUri = o.getData().getData();
+                            if(o.getData() != null && o.getData().getData() != null) captureImageFileUri = o.getData().getData();
                             ImportLoadingDialog dialog = new ImportLoadingDialog();
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(AddItemsActivity.this.getContentResolver(), captureImageFileUri);
                             byte[] imageBytes = bitmapToByteArray(bitmap);
@@ -180,7 +180,7 @@ public class AddItemsActivity extends AppCompatActivity {
     private void selectFromGallery(){
         Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_PICK);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
 
         if(intent.resolveActivity(getPackageManager()) != null) {
             try {

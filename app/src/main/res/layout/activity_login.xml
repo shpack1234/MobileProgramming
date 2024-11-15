@@ -9,77 +9,65 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/login_logo"
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginBottom="150dp"
+        android:fontFamily="@font/ibmflexsans"
+        android:text="@string/app_short_title"
+        android:textFontWeight="900"
+        android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="-180dp"
-        tools:ignore="UseCompoundDrawables">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_short_title"
-            android:fontFamily="@font/ibmflexsans"
-            android:textFontWeight="900"
-            android:textSize="60sp" />
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginTop="18dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/plus"/>
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/plus"
+        android:layout_marginBottom="-50dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintStart_toEndOf="@+id/textView" />
 
     <TextView
-        app:layout_constraintTop_toBottomOf="@id/login_logo"
-        app:layout_constraintStart_toStartOf="@id/login_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/ibmflexsans"
+        android:text="@string/app_slogan"
+        android:textFontWeight="600"
         android:layout_marginTop="-30dp"
         android:textSize="16sp"
-        android:fontFamily="@font/ibmflexsans"
-        android:textFontWeight="600"
-        android:text="@string/app_slogan"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-        <LinearLayout
-            android:layout_margin="30dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <ImageButton
+        android:id="@+id/login_google_signIn_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/login_btn_description"
+        android:src="@drawable/google_signin_btn"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/login_tos_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
 
-            <TextView
-                android:text="@string/login_title"
-                android:fontFamily="@font/pretendard"
-                android:textFontWeight="700"
-                android:textSize="18sp"
-                android:layout_gravity="start"
-                android:layout_marginStart="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/login_google_signIn_btn"
-                android:layout_marginBottom="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </com.google.android.gms.common.SignInButton>
-            <TextView
-                android:id="@+id/login_tos_btn"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/pretendard"
-                android:text="@string/login_tos"/>
-
-        </LinearLayout>
+    <TextView
+        android:id="@+id/login_tos_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/pretendard"
+        android:text="@string/login_tos"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
