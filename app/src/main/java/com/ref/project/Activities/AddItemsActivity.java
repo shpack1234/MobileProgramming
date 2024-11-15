@@ -1,3 +1,7 @@
+/*
+    AddItemsActivity- MPTeamProject
+    Copyright (C) 2024-2025 Coppermine-SP - <https://github.com/Coppermine-SP>.
+ */
 package com.ref.project.Activities;
 
 import android.Manifest;
@@ -16,8 +20,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
@@ -29,6 +31,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.ref.project.Models.CategoryListModel;
+import com.ref.project.Models.CategoryModel;
 import com.ref.project.Models.ReceiptItemModel;
 import com.ref.project.Models.ReceiptModel;
 import com.ref.project.R;
@@ -40,6 +44,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import jakarta.inject.Inject;
@@ -54,7 +59,9 @@ public class AddItemsActivity extends AppCompatActivity {
     private Uri captureImageFileUri;
     private Handler uiThreadHandler;
 
-    private ListView listView;
+    private ListView itemsListView;
+    private List<CategoryModel> categories;
+
     private ArrayList<String> list = new ArrayList<>();
     private ArrayAdapter<String> adapter;
 
@@ -74,11 +81,7 @@ public class AddItemsActivity extends AppCompatActivity {
         findViewById(R.id.addItemsImportBtn).setOnClickListener(v -> importFromReceipt());
         findViewById(R.id.addItemsAddBtn).setOnClickListener(v -> addNewRecord());
 
-        listView = findViewById(R.id.addItemsListView);
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
-        listView.setAdapter(adapter);
-        list.add("test");
-
+        itemsListView = findViewById(R.id.addItemsListView);
         captureImageResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 o -> {
@@ -103,7 +106,7 @@ public class AddItemsActivity extends AppCompatActivity {
                                 @Override
                                 public void onFailure() {
                                     dialog.dismiss();
-                                    uiThreadHandler.post(()-> Toast.makeText(AddItemsActivity.this, "요청에 실패하였습니다.", Toast.LENGTH_LONG).show());
+                                    uiThreadHandler.post(()-> Toast.makeText(AddItemsActivity.this, R.string.additems_import_request_error, Toast.LENGTH_LONG).show());
                                 }
                             });
 
@@ -113,7 +116,34 @@ public class AddItemsActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        serverAdapter.GetCategoryListAsync(new ServerAdapter.IServerRequestCallback<CategoryListModel>() {
+            @Override
+            public void onSuccess(CategoryListModel result) {
+                categories = result.Categories;
+            }
+
+            @Override
+            public void onFailure() {
+                uiThreadHandler.post(() -> {
+                   Toast.makeText(AddItemsActivity.this, R.string.additems_category_request_error, Toast.LENGTH_LONG).show();
+                   finish();
+                });
+            }
+        });
     }
+
+    //region
+
+    private void addNewRecord(){
+        ImportLoadingDialog dialog = new ImportLoadingDialog();
+        dialog.show(getSupportFragmentManager(), "importLoadingDialog");
+    }
+
+    //endregion
+
+
+    //region Import from Receipt
 
     private byte[] bitmapToByteArray(Bitmap bitmap) {
         try(ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
@@ -130,12 +160,6 @@ public class AddItemsActivity extends AppCompatActivity {
         File storageDir = getExternalFilesDir("tmp");
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
-
-    private void addNewRecord(){
-        ImportLoadingDialog dialog = new ImportLoadingDialog();
-        dialog.show(getSupportFragmentManager(), "importLoadingDialog");
-    }
-
 
     private void importFromReceipt(){
         new AlertDialog.Builder(this)
@@ -197,7 +221,8 @@ public class AddItemsActivity extends AppCompatActivity {
         else{
             Log.w(TAG, "ACTION_PICK_IMAGES resolveActivity failed!");
         }
-
-
     }
+
+    //endregion
+
 }

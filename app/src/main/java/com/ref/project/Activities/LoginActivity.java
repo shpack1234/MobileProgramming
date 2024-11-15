@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialCancellationException;
 import androidx.credentials.exceptions.GetCredentialException;
 import androidx.credentials.exceptions.NoCredentialException;
 
@@ -73,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, R.string.login_no_account_error, Toast.LENGTH_LONG).show();
                     startActivity(intent);
                 }
-                else{
+                else if(!(e instanceof GetCredentialCancellationException)){
                     Toast.makeText(LoginActivity.this, R.string.login_unknown_error, Toast.LENGTH_LONG).show();
                 }
             }
