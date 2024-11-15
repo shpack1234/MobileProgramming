@@ -5,6 +5,7 @@
 package com.ref.project.Activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -54,8 +54,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -66,7 +64,6 @@ class ItemListDataAdapter extends BaseAdapter{
     private final List<CategoryModel> categories;
     private final Context context;
     private final IActionHandler actionHandler;
-    private ViewHolder mViewHolder;
 
     public ItemListDataAdapter(Context context, IActionHandler actionHandler, List<AddItemModel> items, List<CategoryModel> categories){
         this.items = items;
@@ -83,8 +80,8 @@ class ItemListDataAdapter extends BaseAdapter{
         private ImageButton actionBtn;
     }
 
-    public static interface IActionHandler{
-        public void onAction(int idx);
+    public interface IActionHandler{
+        void onAction(int idx);
     }
 
     @Override
@@ -102,8 +99,10 @@ class ItemListDataAdapter extends BaseAdapter{
         return pos;
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public View getView(int pos, View convertView, ViewGroup parent) {
+        ViewHolder mViewHolder;
         if(convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.additem_item, parent, false);
 
@@ -113,7 +112,7 @@ class ItemListDataAdapter extends BaseAdapter{
             mViewHolder.quantityLabel = convertView.findViewById(R.id.itemQuantityLabel);
             mViewHolder.expiresLabel = convertView.findViewById(R.id.itemExpiresLabel);
             mViewHolder.actionBtn = convertView.findViewById(R.id.itemActionBtn);
-            convertView.findViewById(R.id.itemActionBtn).setOnClickListener(v -> actionHandler.onAction(pos));
+            mViewHolder.actionBtn.setOnClickListener(v -> actionHandler.onAction(pos));
 
             convertView.setTag(mViewHolder);
         }
@@ -131,7 +130,7 @@ class ItemListDataAdapter extends BaseAdapter{
         mViewHolder.categoryLabel.setText(categoryName);
         mViewHolder.descriptionLabel.setText(item.ItemDescription);
         mViewHolder.expiresLabel.setText(item.Expires.toString());
-        mViewHolder.quantityLabel.setText(String.format("%s개", String.valueOf(item.ItemQuantity)));
+        mViewHolder.quantityLabel.setText(String.format("%d개", item.ItemQuantity));
 
         return convertView;
     }
@@ -222,7 +221,7 @@ public class AddItemsActivity extends AppCompatActivity {
             @Override
             public void onSuccess(CategoryListModel result) {
                 categories = result.Categories;
-                items = new ArrayList<AddItemModel>();
+                items = new ArrayList<>();
                 adapter = new ItemListDataAdapter(AddItemsActivity.this, (x -> itemAction(x)), items, categories);
                 uiThreadHandler.post(() -> itemsListView.setAdapter(adapter));
             }
