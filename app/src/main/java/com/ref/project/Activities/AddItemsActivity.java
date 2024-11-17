@@ -43,7 +43,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.ref.project.Models.AddItemModel;
 import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.CategoryModel;
@@ -63,8 +62,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import jakarta.inject.Inject;
