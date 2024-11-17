@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -38,6 +40,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.ref.project.Models.AddItemModel;
 import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.CategoryModel;
@@ -52,9 +58,13 @@ import com.ref.project.Views.TitleBar;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import jakarta.inject.Inject;
@@ -247,8 +257,61 @@ public class AddItemsActivity extends AppCompatActivity {
         if(items.isEmpty()) emptyPlaceholder.setVisibility(View.VISIBLE);
     }
 
+    private View configureDialogView(AddItemModel model){
+        @SuppressLint("InflateParams")
+        View v = LayoutInflater.from(this).inflate(R.layout.additem_add_dialog, null, false);
+        TextInputEditText description = v.findViewById(R.id.itemDescriptionText);
+        TextInputEditText expires = v.findViewById(R.id.itemExpiresText);
+        AutoCompleteTextView categoriesDropdown = v.findViewById(R.id.itemCategoryList);
+
+        ArrayList<String> categoryList = new ArrayList<>();
+        for(CategoryModel x : categories) categoryList.add(x.CategoryName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(AddItemsActivity.this, R.layout.item_list, categoryList);
+        categoriesDropdown.setAdapter(adapter);
+        expires.setOnClickListener(x -> {
+            MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("유효 기간 선택")
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build();
+            materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
+
+            materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+                @Override
+                public void onPositiveButtonClick(Long selection) {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date = new Date();
+                    date.setTime(selection);
+                    expires.setText(simpleDateFormat.format(date));
+                }
+            });
+        });
+
+        if(model != null) {
+            description.setText(model.ItemDescription);
+            expires.setText(model.Expires.toString());
+            categoriesDropdown.setText(
+                    categories.stream().filter(x -> x.CategoryId == model.CategoryId).map(x -> x.CategoryName).findFirst().get(), false);
+        }
+        else{
+
+        }
+
+        return v;
+    }
+
     private void itemAction(int idx){
-        Toast.makeText(this, String.valueOf(idx), Toast.LENGTH_LONG).show();
+        AddItemModel model = items.get(idx);
+        new AlertDialog.Builder(this)
+                .setTitle("항목 수정 / 삭제")
+                .setView(configureDialogView(model))
+                .setNegativeButton("삭제", (d,w) -> {
+                    deleteItem(idx);
+                    adapter.notifyDataSetChanged();
+                })
+                .setPositiveButton("수정", (d,w) -> {
+
+                })
+                .setNeutralButton("취소", null)
+                .show();
     }
 
     private void addNewRecord(){

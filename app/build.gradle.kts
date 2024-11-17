@@ -54,7 +54,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.play.services.auth)
     implementation(libs.credentials)
-    implementation("com.airbnb.android:lottie-compose:6.0.0")
+    implementation(libs.lottie.compose)
     implementation(libs.credentials.play.services.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

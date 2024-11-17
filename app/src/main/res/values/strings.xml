@@ -25,4 +25,8 @@
     <string name="additems_add">새 레코드</string>
     <string name="additems_submit">완료</string>
     <string name="additems_empty">항목 없음</string>
+
+    <string name="item_name">이름</string>
+    <string name="item_category">분류</string>
+    <string name="item_expires">유효 기한</string>
 </resources>
