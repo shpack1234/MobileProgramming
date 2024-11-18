@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.play.services.auth)
+    implementation(libs.jackson.datatype.jsr310)
     implementation(libs.credentials)
     implementation(libs.lottie.compose)
     implementation(libs.credentials.play.services.auth)
