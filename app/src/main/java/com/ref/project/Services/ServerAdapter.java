@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -19,7 +18,6 @@ import com.ref.project.Models.AccountInfoModel;
 import com.ref.project.Models.AddItemListModel;
 import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.ItemListModel;
-import com.ref.project.Models.ReceiptItemModel;
 import com.ref.project.Models.ReceiptModel;
 
 import java.io.IOException;
