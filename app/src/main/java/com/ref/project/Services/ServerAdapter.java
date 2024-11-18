@@ -11,8 +11,12 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 import androidx.annotation.NonNull;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ref.project.Models.AccountInfoModel;
+import com.ref.project.Models.AddItemListModel;
 import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.ItemListModel;
 import com.ref.project.Models.ReceiptItemModel;
@@ -163,6 +167,28 @@ public class ServerAdapter{
                         .get()
                         .build(),
                 ItemListModel.class, callback);
+    }
+
+    public void AddItemsAsync(AddItemListModel model, IServerRequestCallback<Void> callback) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        String json;
+
+        try{
+            json = mapper.writeValueAsString(model);
+        }
+        catch (Exception e){
+            Log.e(TAG, "Exception in AddItemsAsync() writeValueAsString\n" + e);
+            callback.onFailure();
+            return;
+        }
+
+        requestAsync("AddItemsAsync",
+                new Request.Builder()
+                        .url(endpoint + "/api/fridge/addItems")
+                        .post(RequestBody.create(json, MediaType.parse("application/json; charset=utf-8")))
+                        .build(), Void.class, callback);
     }
 
     public void ImportFromReceiptAsync(byte[] image, IServerRequestCallback<ReceiptModel> callback){
