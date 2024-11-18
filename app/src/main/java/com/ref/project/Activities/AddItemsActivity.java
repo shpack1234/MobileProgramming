@@ -8,6 +8,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,6 +17,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,12 +45,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputEditText;
+import com.ref.project.Models.AddItemListModel;
 import com.ref.project.Models.AddItemModel;
 import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.CategoryModel;
-import com.ref.project.Models.ItemModel;
 import com.ref.project.Models.ReceiptItemModel;
 import com.ref.project.Models.ReceiptModel;
 import com.ref.project.R;
@@ -57,11 +60,14 @@ import com.ref.project.Views.TitleBar;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import jakarta.inject.Inject;
@@ -174,6 +180,7 @@ public class AddItemsActivity extends AppCompatActivity {
         ((TitleBar)findViewById(R.id.addItemTitle)).setOnBackListener(v -> finish());
         findViewById(R.id.addItemsImportBtn).setOnClickListener(v -> importFromReceipt());
         findViewById(R.id.addItemsAddBtn).setOnClickListener(v -> addNewRecord());
+        findViewById(R.id.addItemsSubmitBtn).setOnClickListener(v -> sendRequest());
 
         itemsListView = findViewById(R.id.addItemsListView);
         emptyPlaceholder = findViewById(R.id.addItemsEmpty);
@@ -191,6 +198,8 @@ public class AddItemsActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(ReceiptModel result) {
                                     for(ReceiptItemModel x : result.Items) {
+                                        if(categories.stream().noneMatch(y -> y.CategoryId == x.CategoryId)) continue;
+
                                         AddItemModel model = new AddItemModel();
                                         model.CategoryId = x.CategoryId;
                                         model.ItemDescription = x.ItemDescription;
@@ -243,7 +252,26 @@ public class AddItemsActivity extends AppCompatActivity {
         });
     }
 
-    //region itemList behaviour
+    private void sendRequest() {
+        AddItemListModel model = new AddItemListModel();
+        model.Items = items;
+        serverAdapter.AddItemsAsync(model, new ServerAdapter.IServerRequestCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                uiThreadHandler.post(() ->finish());
+            }
+
+            @Override
+            public void onFailure() {
+                uiThreadHandler.post(() -> {
+                    Toast.makeText(AddItemsActivity.this, "서버 요청 실패", Toast.LENGTH_LONG).show();
+                    finish();
+                });
+            }
+        });
+    }
+
+    //region Item actions
     private void addItem(AddItemModel x){
         emptyPlaceholder.setVisibility(View.INVISIBLE);
         items.add(x);
@@ -254,72 +282,143 @@ public class AddItemsActivity extends AppCompatActivity {
         if(items.isEmpty()) emptyPlaceholder.setVisibility(View.VISIBLE);
     }
 
-    private View configureDialogView(AddItemModel model){
+    private static class AddDialogComponents{
+        public TextInputEditText DescriptionText;
+        public TextInputEditText QuantityText;
+        public TextInputEditText ExpiresText;
+        public AutoCompleteTextView CategoriesDropdown;
+    }
+
+    private View configureDialogView(AddItemModel model, AddDialogComponents components){
         @SuppressLint("InflateParams")
         View v = LayoutInflater.from(this).inflate(R.layout.additem_add_dialog, null, false);
-        TextInputEditText description = v.findViewById(R.id.itemDescriptionText);
-        TextInputEditText expires = v.findViewById(R.id.itemExpiresText);
-        AutoCompleteTextView categoriesDropdown = v.findViewById(R.id.itemCategoryList);
+        components.DescriptionText = v.findViewById(R.id.itemDescriptionText);
+        components.ExpiresText = v.findViewById(R.id.itemExpiresText);
+        components.CategoriesDropdown = v.findViewById(R.id.itemCategoryList);
+        components.QuantityText = v.findViewById(R.id.itemQuantityText);
 
         ArrayList<String> categoryList = new ArrayList<>();
         for(CategoryModel x : categories) categoryList.add(x.CategoryName);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(AddItemsActivity.this, R.layout.item_list, categoryList);
-        categoriesDropdown.setAdapter(adapter);
-        expires.setOnClickListener(x -> {
+        components.CategoriesDropdown.setAdapter(adapter);
+        components.ExpiresText.setOnClickListener(x -> {
             MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker()
                     .setTitleText("유효 기간 선택")
                     .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build();
             materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
 
-            materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
-                @Override
-                public void onPositiveButtonClick(Long selection) {
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    Date date = new Date();
-                    date.setTime(selection);
-                    expires.setText(simpleDateFormat.format(date));
-                }
+            materialDatePicker.addOnPositiveButtonClickListener(selection -> {
+                LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(selection), ZoneId.systemDefault());
+                components.ExpiresText.setText(dateTime.format(DateTimeFormatter.ISO_DATE));
             });
         });
 
         if(model != null) {
-            description.setText(model.ItemDescription);
-            expires.setText(model.Expires.toString());
-            categoriesDropdown.setText(
+            components.DescriptionText.setText(model.ItemDescription);
+            components.ExpiresText.setText(model.Expires.toString());
+            components.QuantityText.setText(String.valueOf(model.ItemQuantity));
+            components.CategoriesDropdown.setText(
                     categories.stream().filter(x -> x.CategoryId == model.CategoryId).map(x -> x.CategoryName).findFirst().get(), false);
         }
-        else{
-
-        }
-
         return v;
+    }
+
+    private void AddDialogValidate(AddDialogComponents components, Button btn){
+        btn.setEnabled(components.ExpiresText.getText() != null &&
+                components.DescriptionText.getText() != null &&
+                components.QuantityText.getText() != null &
+                !components.ExpiresText.getText().toString().isEmpty() &&
+                !components.DescriptionText.getText().toString().isEmpty() &&
+                !components.QuantityText.getText().toString().isEmpty() &&
+                Integer.parseInt(components.QuantityText.getText().toString()) > 0 &&
+                Integer.parseInt(components.QuantityText.getText().toString()) < 99 &&
+                !components.CategoriesDropdown.getText().toString().isEmpty());
     }
 
     private void itemAction(int idx){
         AddItemModel model = items.get(idx);
-        new AlertDialog.Builder(this)
-                .setTitle("항목 수정 / 삭제")
-                .setView(configureDialogView(model))
-                .setNegativeButton("삭제", (d,w) -> {
+        AddDialogComponents components = new AddDialogComponents();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.additems_action_dialog_title)
+                .setView(configureDialogView(model, components))
+                .setNegativeButton(R.string.additems_delete_action, (d,w) -> {
                     deleteItem(idx);
                     adapter.notifyDataSetChanged();
                 })
-                .setPositiveButton("수정", (d,w) -> {
-
+                .setPositiveButton(R.string.additems_modify_action, (d,w) -> {
+                    model.ItemDescription = Objects.requireNonNull(components.DescriptionText.getText()).toString();
+                    model.ItemQuantity = Integer.parseInt(Objects.requireNonNull(components.QuantityText.getText()).toString());
+                    model.Expires = LocalDate.parse(Objects.requireNonNull(components.ExpiresText.getText()).toString(), DateTimeFormatter.ISO_DATE);
+                    model.CategoryId = categories.stream()
+                            .filter(x -> Objects.equals(x.CategoryName, components.CategoriesDropdown.getText().toString()))
+                            .map(x -> x.CategoryId)
+                            .findFirst()
+                            .get();
+                    adapter.notifyDataSetChanged();
                 })
-                .setNeutralButton("취소", null)
+                .setNeutralButton(R.string.additems_cancel_action, null)
                 .show();
+
+        Button btn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                AddDialogValidate(components, btn);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+
+        AddDialogValidate(components, btn);
+        components.ExpiresText.addTextChangedListener(watcher);
+        components.DescriptionText.addTextChangedListener(watcher);
+        components.QuantityText.addTextChangedListener(watcher);
     }
 
     private void addNewRecord(){
-        AddItemModel model = new AddItemModel();
-        model.ItemQuantity = 5;
-        model.ItemDescription = "테스트 아이탬";
-        model.Expires = LocalDate.now();
-        model.CategoryId = 7;
+        AddDialogComponents components = new AddDialogComponents();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.additems_add_dialog_title)
+                .setView(configureDialogView(null, components))
+                .setNegativeButton(R.string.additems_cancel_action, null)
+                .setPositiveButton(R.string.additems_add_action, (d,w) -> {
+                    AddItemModel model = new AddItemModel();
+                    model.ItemDescription = Objects.requireNonNull(components.DescriptionText.getText()).toString();
+                    model.ItemQuantity = Integer.parseInt(Objects.requireNonNull(components.QuantityText.getText()).toString());
+                    model.Expires = LocalDate.parse(Objects.requireNonNull(components.ExpiresText.getText()).toString(), DateTimeFormatter.ISO_DATE);
+                    model.CategoryId = categories.stream()
+                            .filter(x -> Objects.equals(x.CategoryName, components.CategoriesDropdown.getText().toString()))
+                            .map(x -> x.CategoryId)
+                            .findFirst()
+                            .get();
 
-        addItem(model);
-        adapter.notifyDataSetChanged();
+                    addItem(model);
+                    adapter.notifyDataSetChanged();
+                })
+                .show();
+
+        Button btn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                AddDialogValidate(components, btn);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+
+        AddDialogValidate(components, btn);
+        components.ExpiresText.addTextChangedListener(watcher);
+        components.DescriptionText.addTextChangedListener(watcher);
+        components.QuantityText.addTextChangedListener(watcher);
     }
     //endregion
 
@@ -344,10 +443,10 @@ public class AddItemsActivity extends AppCompatActivity {
 
     private void importFromReceipt(){
         new AlertDialog.Builder(this)
-                .setTitle("이미지 선택")
-                .setMessage("사진을 찍거나 갤러리에서 선택하세요.")
-                .setPositiveButton("사진 찍기", (dialog, which) -> captureCamera())
-                .setNegativeButton("갤러리에서 선택", (dialog, which) -> selectFromGallery())
+                .setTitle(R.string.additems_import_dialog_title)
+                .setMessage(R.string.additems_import_dialog_message)
+                .setPositiveButton(R.string.additems_take_picture_action, (dialog, which) -> captureCamera())
+                .setNegativeButton(R.string.additems_select_from_gallery_action, (dialog, which) -> selectFromGallery())
                 .show();
     }
 
@@ -376,10 +475,8 @@ public class AddItemsActivity extends AppCompatActivity {
                 Log.e(TAG, "captureCamera Exception!\n" + e);
             }
         }
-        else
-        {
-            Log.w(TAG, "ACTION_IMAGE_CAPTURE resolveActivity failed!");
-        }
+        else Log.w(TAG, "ACTION_IMAGE_CAPTURE resolveActivity failed!");
+
     }
 
     private void selectFromGallery(){
@@ -399,11 +496,8 @@ public class AddItemsActivity extends AppCompatActivity {
                 Log.e(TAG, "selectFromGallery Exception!\n" + e);
             }
         }
-        else{
-            Log.w(TAG, "ACTION_PICK_IMAGES resolveActivity failed!");
-        }
+        else Log.w(TAG, "ACTION_PICK_IMAGES resolveActivity failed!");
     }
-
     //endregion
 
 }
