@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TitleBar">
+        <attr name="title" format="string"/>
+    </declare-styleable>
+    <declare-styleable name="InfoCard">
+        <attr name="infoCardContent" format="string"/>
+        <attr name="infoCardIcon" format="reference"/>
+    </declare-styleable>
+</resources>

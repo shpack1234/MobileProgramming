@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ref.project"
-        minSdk = 28
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -53,7 +53,9 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.play.services.auth)
+    implementation(libs.jackson.datatype.jsr310)
     implementation(libs.credentials)
+    implementation(libs.lottie.compose)
     implementation(libs.credentials.play.services.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

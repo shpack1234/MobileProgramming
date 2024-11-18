@@ -2,6 +2,7 @@ package com.ref.project.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,8 +13,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.exceptions.ClearCredentialException;
 
-import com.ref.project.Models.AccountInfoModel;
-import com.ref.project.Models.ItemListModel;
 import com.ref.project.R;
 import com.ref.project.Services.GoogleSignInManager;
 import com.ref.project.Services.ServerAdapter;
@@ -40,6 +39,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.main_signout_btn).setOnClickListener(v -> SignOut());
+        findViewById(R.id.main_add_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AddItemsActivity.class);
+
+                startActivity(intent);
+            }
+        });
 
         // 백엔드 토큰 로그온
         serverAdapter.TokenSignInAsync(signInManager.GetIdToken(), new ServerAdapter.ITokenSignInCallback() {

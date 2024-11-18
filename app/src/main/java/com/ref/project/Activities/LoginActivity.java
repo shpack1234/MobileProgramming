@@ -2,6 +2,9 @@ package com.ref.project.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -11,8 +14,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialCancellationException;
 import androidx.credentials.exceptions.GetCredentialException;
-import com.google.android.gms.common.SignInButton;
+import androidx.credentials.exceptions.NoCredentialException;
+
 import com.ref.project.R;
 import com.ref.project.Services.GoogleSignInManager;
 
@@ -36,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // 로그인 버튼 클릭 이벤트
-        SignInButton signInButton = findViewById(R.id.login_google_signIn_btn);
+        ImageButton signInButton = findViewById(R.id.login_google_signIn_btn);
         signInButton.setOnClickListener(v -> onClickSignInBtn());
 
         // ToS 텍스트 클릭 이벤트
@@ -61,7 +66,17 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(@NonNull GetCredentialException e) {
+                if(e instanceof NoCredentialException){
+                    Intent intent = new Intent(Settings.ACTION_ADD_ACCOUNT)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+                    intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, new String[] {"com.google"});
+                    Toast.makeText(LoginActivity.this, R.string.login_no_account_error, Toast.LENGTH_LONG).show();
+                    startActivity(intent);
+                }
+                else if(!(e instanceof GetCredentialCancellationException)){
+                    Toast.makeText(LoginActivity.this, R.string.login_unknown_error, Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
