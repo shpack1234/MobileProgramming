@@ -245,7 +245,7 @@ public class AddItemsActivity extends AppCompatActivity {
             @Override
             public void onFailure() {
                 uiThreadHandler.post(() -> {
-                   Toast.makeText(AddItemsActivity.this, R.string.additems_category_request_error, Toast.LENGTH_LONG).show();
+                   Toast.makeText(AddItemsActivity.this, getText(R.string.app_get_categories_error), Toast.LENGTH_LONG).show();
                    finish();
                 });
             }
@@ -264,7 +264,7 @@ public class AddItemsActivity extends AppCompatActivity {
             @Override
             public void onFailure() {
                 uiThreadHandler.post(() -> {
-                    Toast.makeText(AddItemsActivity.this, "서버 요청 실패", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddItemsActivity.this, getText(R.string.app_api_request_error), Toast.LENGTH_LONG).show();
                     finish();
                 });
             }
@@ -303,7 +303,7 @@ public class AddItemsActivity extends AppCompatActivity {
         components.CategoriesDropdown.setAdapter(adapter);
         components.ExpiresText.setOnClickListener(x -> {
             MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker()
-                    .setTitleText("유효 기간 선택")
+                    .setTitleText(getText(R.string.additems_datepicker_dialog_title))
                     .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build();
             materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
 
