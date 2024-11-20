@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private List<ItemModel> items;
     private List<CategoryModel> categories;
 
-    private Handler uiThreadHandler;
     private TextView summationText;
 
 
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        uiThreadHandler = new Handler(Looper.getMainLooper());
         summationText = findViewById(R.id.mainSummationText);
         findViewById(R.id.mainMenuBtn).setOnClickListener(v -> {
             PopupMenu menu = new PopupMenu(this, v);
@@ -92,12 +90,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, getText(R.string.app_api_error), Toast.LENGTH_LONG).show();
-                        signOut();
-                    }
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, getText(R.string.app_api_error), Toast.LENGTH_LONG).show();
+                    signOut();
                 });
 
             }
@@ -113,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(CategoryListModel y) {
                         categories = y.Categories;
-                        uiThreadHandler.post(MainActivity.this::updateUI);
+                        runOnUiThread(MainActivity.this::updateUI);
                     }
 
                     @Override
                     public void onFailure() {
-                        uiThreadHandler.post(() -> Toast.makeText(MainActivity.this, getText(R.string.app_get_categories_error),Toast.LENGTH_LONG).show());
+                        runOnUiThread(() -> Toast.makeText(MainActivity.this, getText(R.string.app_get_categories_error),Toast.LENGTH_LONG).show());
                         signOut();
                     }
                 });
@@ -126,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure() {
-                uiThreadHandler.post(() -> Toast.makeText(MainActivity.this, getText(R.string.app_get_items_error),Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, getText(R.string.app_get_items_error),Toast.LENGTH_LONG).show());
                 signOut();
             }
         });
@@ -142,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResult(Void unused) {
                 signInManager.SetAutoSignIn(false);
-                uiThreadHandler.post(() -> {
+                runOnUiThread(() -> {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
                 });
