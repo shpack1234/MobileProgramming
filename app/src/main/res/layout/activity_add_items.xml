@@ -60,23 +60,25 @@
             tools:ignore="TextContrastCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addItemsAddBtn"
-        style="@style/Widget.Material3.Button.ElevatedButton"
-        android:layout_width="40dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:background="@drawable/additems_add_btn_background"
-        android:contentDescription="@string/additems_add"
-        android:drawablePadding="10dp"
-        android:padding="0dp"
-        app:backgroundTint="@null"
-        app:backgroundTintMode="add"
-        app:icon="@drawable/add_icon"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        app:iconTint="@color/white"
-        android:layout_marginEnd="10dp"
         android:layout_marginBottom="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/main_additems_action_btn_background"
+        android:drawableEnd="@drawable/add_icon"
+        android:drawablePadding="5dp"
+        android:fontFamily="@font/pretendard"
+        android:minHeight="30dp"
+        android:padding="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="@string/additems_add"
+        android:textColor="@color/white"
+        android:textFontWeight="400"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/addItemsSubmitBtn"
         app:layout_constraintEnd_toStartOf="@+id/addItemsImportBtn"
         tools:ignore="TouchTargetSizeCheck" />
@@ -133,7 +135,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         app:infoCardContent="@string/additems_help"
-        app:infoCardIcon="@drawable/info_icon"
+        app:infoCardIcon="@drawable/lightbulb_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="20dp" />
 
