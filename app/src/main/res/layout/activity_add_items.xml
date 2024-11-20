@@ -14,82 +14,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/additems_title" />
 
-    <com.ref.project.Views.InfoCard
-        android:id="@+id/addItemsInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/addItemTitle"
-        app:infoCardContent="@string/additems_help"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:elevation="3dp"
-        app:infoCardIcon="@drawable/info_icon"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/addItemsAddBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/additems_add_btn_background"
-        android:contentDescription="@string/additems_add"
-        android:drawablePadding="10dp"
-        android:padding="0dp"
-        app:backgroundTint="@null"
-        app:backgroundTintMode="add"
-        style="@style/Widget.Material3.Button.ElevatedButton"
-        app:icon="@drawable/add_icon"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        app:iconTint="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/addItemsInfo"
-        app:layout_constraintEnd_toEndOf="@+id/addItemsSubmitBtn"
-        tools:ignore="TouchTargetSizeCheck" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/addItemsImportBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="5dp"
-        android:layout_weight="1"
-        android:background="@drawable/additems_import_btn_background"
-        android:drawableEnd="@drawable/stars_icon"
-        android:drawablePadding="5dp"
-        android:fontFamily="@font/pretendard"
-        android:minHeight="40dp"
-        android:padding="10dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:text="@string/additems_import"
-        android:textColor="@color/white"
-        android:textFontWeight="400"
-        app:layout_constraintEnd_toStartOf="@+id/addItemsAddBtn"
-        app:layout_constraintTop_toBottomOf="@+id/addItemsInfo"
-        tools:ignore="TouchTargetSizeCheck" />
-
     <ListView
         android:id="@+id/addItemsListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/addItemsAddBtn"
-        app:layout_constraintBottom_toTopOf="@id/addItemsSubmitBtn"
+        app:layout_constraintTop_toBottomOf="@+id/addItemTitle"
+        app:layout_constraintBottom_toTopOf="@id/addItemsAddBtn"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="20dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/addItemsEmpty"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/addItemsImportBtn"
-        app:layout_constraintBottom_toTopOf="@id/addItemsSubmitBtn"
-
+        app:layout_constraintTop_toBottomOf="@+id/addItemTitle"
+        app:layout_constraintBottom_toTopOf="@id/addItemsAddBtn"
+        android:layout_marginBottom="20dp"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="15dp">
+        android:layout_marginEnd="20dp">
 
         <ImageView
             android:id="@+id/imageView"
@@ -117,12 +60,53 @@
             tools:ignore="TextContrastCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addItemsAddBtn"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/additems_add_btn_background"
+        android:contentDescription="@string/additems_add"
+        android:drawablePadding="10dp"
+        android:padding="0dp"
+        app:backgroundTint="@null"
+        app:backgroundTintMode="add"
+        app:icon="@drawable/add_icon"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconTint="@color/white"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/addItemsSubmitBtn"
+        app:layout_constraintEnd_toStartOf="@+id/addItemsImportBtn"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/addItemsImportBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/additems_import_btn_background"
+        android:drawableEnd="@drawable/stars_icon"
+        android:drawablePadding="5dp"
+        android:fontFamily="@font/pretendard"
+        android:minHeight="40dp"
+        android:padding="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="@string/additems_import"
+        android:textColor="@color/white"
+        android:textFontWeight="400"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/addItemsSubmitBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addItemsSubmitBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:layout_weight="1"
         android:background="@drawable/additems_submit_btn_background"
         android:fontFamily="@font/pretendard"
@@ -130,12 +114,27 @@
         android:padding="10dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/additems_submit"
         android:textColor="@color/white"
         android:textFontWeight="700"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/addItemsInfo"
+        tools:ignore="VisualLintButtonSize"
+        tools:layout_editor_absoluteX="20dp" />
+
+    <com.ref.project.Views.InfoCard
+        android:id="@+id/addItemsInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        tools:ignore="VisualLintButtonSize" />
+        android:layout_marginBottom="20dp"
+        app:infoCardContent="@string/additems_help"
+        app:infoCardIcon="@drawable/info_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
