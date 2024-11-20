@@ -1,5 +1,7 @@
 package com.ref.project.Activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -25,5 +27,10 @@ public class AboutActivity extends AppCompatActivity {
         });
 
         ((TitleBar)findViewById(R.id.aboutTitleBar)).setOnBackListener(v -> finish());
+        findViewById(R.id.aboutRepositoryCard).setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://github.com/Coppermine-SP/fridgeplus_server"));
+            startActivity(intent);
+        });
     }
 }
