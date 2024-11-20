@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/infoCardIcon"
         app:layout_constraintTop_toTopOf="parent"
-        android:breakStrategy="simple"
         android:textFontWeight="600"
+        android:breakStrategy="simple"
         android:fontFamily="@font/pretendard"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
