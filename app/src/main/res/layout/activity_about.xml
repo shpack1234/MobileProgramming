@@ -67,13 +67,14 @@
         app:layout_constraintStart_toEndOf="@+id/textView" />
 
     <com.ref.project.Views.InfoCard
+        android:id="@+id/aboutRepositoryCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:elevation="5dp"
-        app:infoCardContent="이 소프트웨어는 오픈소스 프로젝트의 일부입니다:\nCoppermine-SP/fridgeplus_server"
+        app:infoCardContent="@string/about_copyright"
         app:infoCardIcon="@drawable/github_icon"
         app:layout_constraintBottom_toBottomOf="parent" />
 

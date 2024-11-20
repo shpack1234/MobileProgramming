@@ -23,6 +23,7 @@
     </string>
 
     <string name="about_title">정보</string>
+    <string name="about_copyright"><b>이 소프트웨어는 오픈소스 프로젝트의 일부입니다:</b>\nCoppermine-SP/fridgeplus_server</string>
 
     <string name="item_action_description">항목 옵션</string>
     <string name="additems_title">새 식품 추가하기</string>
