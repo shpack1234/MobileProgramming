@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.MainActivity">
+    tools:context=".Activities.MainActivity"
+    android:background="@drawable/main_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -98,7 +99,7 @@
             android:padding="10dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            android:text="식품 추가"
+            android:text="@string/action_additems"
             android:textColor="@color/white"
             android:textFontWeight="400"
             app:layout_constraintStart_toStartOf="parent"
@@ -120,7 +121,7 @@
             android:padding="10dp"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
-            android:text="레시피 추천"
+            android:text="@string/action_ai_recipe"
             android:textColor="@color/white"
             android:textFontWeight="400"
             app:layout_constraintStart_toEndOf="@id/addItemsActionBtn"
@@ -131,10 +132,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <Button
-        android:id="@+id/main_add_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="개체 추가" />
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

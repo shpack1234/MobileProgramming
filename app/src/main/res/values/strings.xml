@@ -55,6 +55,8 @@
     <string name="action_tos">사용 약관 및 개인정보보호정책</string>
     <string name="action_about">정보</string>
     <string name="action_signout">로그아웃</string>
+    <string name="action_additems">식품 추가</string>
+    <string name="action_ai_recipe">레시피 추천</string>
 
     <string name="main_title">나의 냉장고</string>
     <string name="main_summation">%d개의 식품이 냉장고에 있습니다.</string>
