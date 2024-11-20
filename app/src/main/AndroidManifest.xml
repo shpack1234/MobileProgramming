@@ -30,6 +30,9 @@
         android:theme="@style/Theme.MPTeamProject"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Activities.RecipeActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.AboutActivity"
             android:exported="false" />
         <activity
