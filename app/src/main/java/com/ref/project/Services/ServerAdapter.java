@@ -19,6 +19,7 @@ import com.ref.project.Models.AddItemListModel;
 import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.ItemListModel;
 import com.ref.project.Models.ReceiptModel;
+import com.ref.project.Models.RecipeModel;
 
 import java.io.IOException;
 import java.net.CookieManager;
@@ -198,5 +199,14 @@ public class ServerAdapter{
                                         RequestBody.create(image)).setType(MultipartBody.FORM).build())
                         .build(),
                 ReceiptModel.class, callback);
+    }
+
+    public void InsightAsync(IServerRequestCallback<RecipeModel> callback){
+        requestAsync("RecipeAsync",
+                new Request.Builder()
+                        .url(endpoint + "/api/intelligence/insight")
+                        .get()
+                        .build(),
+                RecipeModel.class, callback);
     }
 }
