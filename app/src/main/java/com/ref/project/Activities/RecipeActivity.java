@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.ref.project.Models.RecipeModel;
 import com.ref.project.R;
+import com.ref.project.Views.TitleBar;
 
 public class RecipeActivity extends AppCompatActivity {
     @Override
@@ -27,6 +28,7 @@ public class RecipeActivity extends AppCompatActivity {
             return insets;
         });
 
+        ((TitleBar)findViewById(R.id.titleBar)).setOnBackListener(v -> finish());
         TextView recipeNameLabel = findViewById(R.id.recipeNameLabel);
         TextView recipeDescLabel = findViewById(R.id.recipeDescriptionLabel);
         LinearLayout recipeSteps = findViewById(R.id.recipeSteps);
