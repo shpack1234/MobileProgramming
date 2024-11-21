@@ -23,7 +23,6 @@ import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.CategoryModel;
 import com.ref.project.Models.ItemListModel;
 import com.ref.project.Models.ItemModel;
-import com.ref.project.Models.ReceiptModel;
 import com.ref.project.Models.RecipeModel;
 import com.ref.project.R;
 import com.ref.project.Services.GoogleSignInManager;
