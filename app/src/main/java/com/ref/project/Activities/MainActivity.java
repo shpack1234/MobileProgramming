@@ -6,8 +6,6 @@ package com.ref.project.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,9 +23,12 @@ import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.CategoryModel;
 import com.ref.project.Models.ItemListModel;
 import com.ref.project.Models.ItemModel;
+import com.ref.project.Models.ReceiptModel;
+import com.ref.project.Models.RecipeModel;
 import com.ref.project.R;
 import com.ref.project.Services.GoogleSignInManager;
 import com.ref.project.Services.ServerAdapter;
+import com.ref.project.Views.WaitResponseDialog;
 
 import java.util.List;
 
@@ -78,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.addItemsActionBtn).setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, AddItemsActivity.class))
-        );
+                startActivity(new Intent(MainActivity.this, AddItemsActivity.class)));
+        findViewById(R.id.aiRecipeActionBtn).setOnClickListener(v -> recipeInsight());
 
         // 백엔드 토큰 로그온
         serverAdapter.TokenSignInAsync(signInManager.GetIdToken(), new ServerAdapter.ITokenSignInCallback() {
@@ -91,12 +92,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure() {
                 runOnUiThread(() -> {
-                    Toast.makeText(MainActivity.this, getText(R.string.app_api_error), Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.app_api_error, Toast.LENGTH_LONG).show();
                     signOut();
                 });
 
             }
         });
+    }
+
+    private void recipeInsight(){
+        WaitResponseDialog dialog = new WaitResponseDialog();
+        dialog.show(getSupportFragmentManager(), "waitResponseDialog");
+        serverAdapter.InsightAsync(new ServerAdapter.IServerRequestCallback<RecipeModel>() {
+            @Override
+            public void onSuccess(RecipeModel result) {
+                dialog.dismiss();
+                Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
+                intent.putExtra(RecipeModel.RECIPE_MODEL_KEY, result);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure() {
+                dialog.dismiss();
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.app_insight_error, Toast.LENGTH_LONG).show());
+            }
+        });
+
     }
 
     private void updateData(){
@@ -144,9 +166,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(@NonNull ClearCredentialException e) {
-
-            }
+            public void onError(@NonNull ClearCredentialException e) { }
         });
     }
 }
