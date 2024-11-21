@@ -1,7 +1,5 @@
 package com.ref.project.Views;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,7 +13,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.ref.project.R;
 
-public class ImportLoadingDialog extends DialogFragment {
+public class WaitResponseDialog extends DialogFragment {
 
     @Nullable
     @Override

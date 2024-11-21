@@ -54,7 +54,7 @@ import com.ref.project.Models.ReceiptItemModel;
 import com.ref.project.Models.ReceiptModel;
 import com.ref.project.R;
 import com.ref.project.Services.ServerAdapter;
-import com.ref.project.Views.ImportLoadingDialog;
+import com.ref.project.Views.WaitResponseDialog;
 import com.ref.project.Views.TitleBar;
 
 import java.io.ByteArrayOutputStream;
@@ -190,10 +190,10 @@ public class AddItemsActivity extends AppCompatActivity {
                     if(o.getResultCode() == Activity.RESULT_OK){
                         try{
                             if(o.getData() != null && o.getData().getData() != null) captureImageFileUri = o.getData().getData();
-                            ImportLoadingDialog dialog = new ImportLoadingDialog();
+                            WaitResponseDialog dialog = new WaitResponseDialog();
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(AddItemsActivity.this.getContentResolver(), captureImageFileUri);
                             byte[] imageBytes = bitmapToByteArray(bitmap);
-                            dialog.show(getSupportFragmentManager(), "importLoadingDialog");
+                            dialog.show(getSupportFragmentManager(), "waitResponseDialog");
                             serverAdapter.ImportFromReceiptAsync(imageBytes, new ServerAdapter.IServerRequestCallback<ReceiptModel>() {
                                 @Override
                                 public void onSuccess(ReceiptModel result) {
