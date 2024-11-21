@@ -9,6 +9,7 @@
         android:id="@+id/paragraphHeader"
         android:layout_width="wrap_content"
         android:layout_height="24sp"
+        android:importantForAccessibility="no"
         android:src="@drawable/dot_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
