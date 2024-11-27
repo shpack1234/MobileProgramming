@@ -81,12 +81,18 @@
             android:fontFamily="@font/pretendard"
             android:textFontWeight="700"
             android:textSize="18sp"
-            android:text="@string/main_summation_no_items"
+            android:text="@string/main_no_items"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainTitleText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mainItemList"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        app:layout_constraintTop_toBottomOf="@+id/mainSummationArea"
+        app:layout_constraintBottom_toTopOf="@id/addItemsActionBtn" />
 
     <com.ref.project.Views.InfoCard
         android:id="@+id/mainInfoCard"

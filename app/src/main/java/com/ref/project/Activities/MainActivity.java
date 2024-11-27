@@ -4,6 +4,7 @@
  */
 package com.ref.project.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.PopupMenu;
@@ -18,7 +19,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.exceptions.ClearCredentialException;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.ref.project.Activities.Adapters.ItemListDataAdapter;
 import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.CategoryModel;
 import com.ref.project.Models.ItemListModel;
@@ -42,11 +46,13 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     ServerAdapter serverAdapter;
 
+    private boolean signedIn = false;
     private List<ItemModel> items;
     private List<CategoryModel> categories;
 
     private TextView summationText;
-
+    private RecyclerView itemListView;
+    private ItemListDataAdapter itemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         summationText = findViewById(R.id.mainSummationText);
+        itemListView = findViewById(R.id.mainItemList);
         findViewById(R.id.mainMenuBtn).setOnClickListener(v -> {
             PopupMenu menu = new PopupMenu(this, v);
             menu.getMenuInflater().inflate(R.menu.main_menu, menu.getMenu());
@@ -86,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 updateData();
+                signedIn = true;
             }
 
             @Override
@@ -99,7 +107,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(signedIn)updateData();
+    }
+
     private void recipeInsight(){
+        if(items.isEmpty()){
+            Toast.makeText(this, R.string.app_insight_no_items_error, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         WaitResponseDialog dialog = new WaitResponseDialog();
         dialog.show(getSupportFragmentManager(), "waitResponseDialog");
         serverAdapter.InsightAsync(new ServerAdapter.IServerRequestCallback<RecipeModel>() {
@@ -148,9 +167,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void updateUI(){
-        if(items.isEmpty()) summationText.setText(getText(R.string.main_summation_no_items));
-        else summationText.setText(getString(R.string.main_summation, items.size()));
+        if(items.isEmpty()) summationText.setText(getText(R.string.main_no_items));
+        else summationText.setText(getString(R.string.main_items, items.size()));
+
+        if(itemAdapter == null){
+            itemListView.setLayoutManager(new LinearLayoutManager(this));
+            itemAdapter = new ItemListDataAdapter(this, items, categories);
+            itemListView.setAdapter(itemAdapter);
+        }
+        else itemAdapter.notifyDataSetChanged();
     }
 
     private void signOut() {
@@ -169,3 +196,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
+

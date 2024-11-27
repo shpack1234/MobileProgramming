@@ -7,7 +7,6 @@ package com.ref.project.Activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,14 +21,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -46,6 +41,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
+import com.ref.project.Activities.Adapters.AddItemListDataAdapter;
 import com.ref.project.Models.AddItemListModel;
 import com.ref.project.Models.AddItemModel;
 import com.ref.project.Models.CategoryListModel;
@@ -72,83 +68,6 @@ import java.util.Objects;
 import dagger.hilt.android.AndroidEntryPoint;
 import jakarta.inject.Inject;
 
-class ItemListDataAdapter extends BaseAdapter{
-    private final List<AddItemModel> items;
-    private final List<CategoryModel> categories;
-    private final Context context;
-    private final IActionHandler actionHandler;
-
-    public ItemListDataAdapter(Context context, IActionHandler actionHandler, List<AddItemModel> items, List<CategoryModel> categories){
-        this.items = items;
-        this.categories = categories;
-        this.context = context;
-        this.actionHandler = actionHandler;
-    }
-
-    public static class ViewHolder {
-        private TextView categoryLabel;
-        private TextView descriptionLabel;
-        private TextView quantityLabel;
-        private TextView expiresLabel;
-        private ImageButton actionBtn;
-    }
-
-    public interface IActionHandler{
-        void onAction(int idx);
-    }
-
-    @Override
-    public int getCount() {
-        return items.size();
-    }
-
-    @Override
-    public Object getItem(int pos) {
-        return items.get(pos);
-    }
-
-    @Override
-    public long getItemId(int pos) {
-        return pos;
-    }
-
-    @SuppressLint("DefaultLocale")
-    @Override
-    public View getView(int pos, View convertView, ViewGroup parent) {
-        ViewHolder mViewHolder;
-        if(convertView == null){
-            convertView = LayoutInflater.from(context).inflate(R.layout.additem_item, parent, false);
-
-            mViewHolder = new ViewHolder();
-            mViewHolder.categoryLabel = convertView.findViewById(R.id.itemCategoryLabel);
-            mViewHolder.descriptionLabel = convertView.findViewById(R.id.itemDescriptionLabel);
-            mViewHolder.quantityLabel = convertView.findViewById(R.id.itemQuantityLabel);
-            mViewHolder.expiresLabel = convertView.findViewById(R.id.itemExpiresLabel);
-            mViewHolder.actionBtn = convertView.findViewById(R.id.itemActionBtn);
-            mViewHolder.actionBtn.setOnClickListener(v -> actionHandler.onAction(pos));
-
-            convertView.setTag(mViewHolder);
-        }
-        else{
-            mViewHolder = (ViewHolder)convertView.getTag();
-        }
-
-        AddItemModel item = items.get(pos);
-        String categoryName = categories.stream()
-                .filter(x -> x.CategoryId == item.CategoryId)
-                .map(x -> x.CategoryName)
-                .findFirst()
-                .orElse("null");
-
-        mViewHolder.categoryLabel.setText(categoryName);
-        mViewHolder.descriptionLabel.setText(item.ItemDescription);
-        mViewHolder.expiresLabel.setText(item.Expires.toString());
-        mViewHolder.quantityLabel.setText(String.format("%d개", item.ItemQuantity));
-
-        return convertView;
-    }
-}
-
 @AndroidEntryPoint
 public class AddItemsActivity extends AppCompatActivity {
     @Inject
@@ -163,7 +82,7 @@ public class AddItemsActivity extends AppCompatActivity {
     private View emptyPlaceholder;
     private List<CategoryModel> categories;
     private List<AddItemModel> items;
-    private ItemListDataAdapter adapter;
+    private AddItemListDataAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,7 +157,7 @@ public class AddItemsActivity extends AppCompatActivity {
             public void onSuccess(CategoryListModel result) {
                 categories = result.Categories;
                 items = new ArrayList<>();
-                adapter = new ItemListDataAdapter(AddItemsActivity.this, (x -> itemAction(x)), items, categories);
+                adapter = new AddItemListDataAdapter(AddItemsActivity.this, (x -> itemAction(x)), items, categories);
                 uiThreadHandler.post(() -> itemsListView.setAdapter(adapter));
             }
 
@@ -299,7 +218,7 @@ public class AddItemsActivity extends AppCompatActivity {
 
         ArrayList<String> categoryList = new ArrayList<>();
         for(CategoryModel x : categories) categoryList.add(x.CategoryName);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(AddItemsActivity.this, R.layout.item_list, categoryList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(AddItemsActivity.this, R.layout.add_item_list, categoryList);
         components.CategoriesDropdown.setAdapter(adapter);
         components.ExpiresText.setOnClickListener(x -> {
             MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker()
