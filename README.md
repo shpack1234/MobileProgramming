@@ -8,6 +8,10 @@
 > 
 > [Coppermine-SP/fridgeplus_server](https://github.com/Coppermine-SP/fridgeplus_server)
 
+<img src="https://github.com/user-attachments/assets/714dac7d-8d3a-46b5-ab3d-3f3c6f8ddd3b" style="width:30%">
+<img src="https://github.com/user-attachments/assets/8d39a0ab-644e-43ab-b4a7-3936efacec70" style="width:30%">
+<img src="https://github.com/user-attachments/assets/487e1c8f-dfdb-44a6-996c-7c83a08b8e7c" style="width:30%">
+
 ### Table of Content
   - [Overview](#overview)
   - [Dependencies](#dependencies)
