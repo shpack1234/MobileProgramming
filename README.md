@@ -11,6 +11,7 @@
 ### Table of Content
   - [Overview](#overview)
   - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
     
 ## Overview
 - Scalable 3-Tier Architecture
@@ -35,3 +36,25 @@
 - **libs.credentials**
 - **libs.credentials.play.services.auth**
 - **libs.lottie.compose**
+
+## Configuration
+> [!NOTE]
+> **Google OAuth 2.0 Client ID는 아래 Google Cloud Console 페이지에서 발급 할 수 있습니다.**
+> 
+> https://console.cloud.google.com/apis/credentials
+
+> [!WARNING]
+> **Google OAuth Client에 등록된 SHA-1 Fingerprint와 빌드 환경의 Keystore가 일치해야 합니다.**
+>
+> 앱 서명과 관련 한 자세한 정보는 다음 [Android Developers](https://developer.android.com/studio/publish/app-signing?hl=en) 페이지를 참조하십시오:
+
+> [!WARNING]
+> **API 엔드포인트 연결은 반드시 신뢰할 수 있는 HTTPS 연결을 사용하십시오.**
+>
+> API 서버로 사용자의 고유 식별 정보가 전송될 수 있기 때문에 반드시 안전한 HTTPS 연결을 사용해야 합니다.
+
+프로젝트 루트 폴더에 secrets.properties 파일을 생성하고 다음과 같이 구성하십시오:
+```properties
+API_ENDPOINT=[API 엔드포인트]
+GOOGLE_CLIENT_ID=[Google OAuth Client ID]
+```
