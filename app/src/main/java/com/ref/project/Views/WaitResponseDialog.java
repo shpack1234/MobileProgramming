@@ -1,7 +1,5 @@
 package com.ref.project.Views;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,12 +13,14 @@ import androidx.fragment.app.DialogFragment;
 
 import com.ref.project.R;
 
-public class ImportLoadingDialog extends DialogFragment {
+import java.util.Objects;
+
+public class WaitResponseDialog extends DialogFragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(Objects.requireNonNull(getDialog()).getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return inflater.inflate(R.layout.import_loading_dialog, container, false);
     }
 

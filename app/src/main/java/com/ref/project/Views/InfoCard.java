@@ -16,6 +16,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.ref.project.R;
 
 public class InfoCard extends ConstraintLayout {
+    private final TextView contentLabel;
+    private final ImageView contentIcon;
     public InfoCard(Context context, AttributeSet attrs){
         super(context, attrs);
         String content;
@@ -27,8 +29,19 @@ public class InfoCard extends ConstraintLayout {
             iconRes = a.getResourceId(R.styleable.InfoCard_infoCardIcon, 0);
         }
 
-        ((TextView)findViewById(R.id.infoCardText)).setText(content);
-        if(iconRes != 0) ((ImageView)findViewById(R.id.infoCardIcon)).setImageResource(iconRes);
+        contentLabel = findViewById(R.id.infoCardText);
+        contentIcon = findViewById(R.id.infoCardIcon);
+
+        contentLabel.setText(content);
+        if(iconRes != 0) contentIcon.setImageResource(iconRes);
+    }
+
+    public void setContentText(String text){
+        contentLabel.setText(text);
+    }
+
+    public void setContentIcon(Integer id){
+        contentIcon.setImageResource(id);
     }
 
 }

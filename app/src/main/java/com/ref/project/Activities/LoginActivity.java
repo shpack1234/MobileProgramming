@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 signInManager.SetAutoSignIn(true);
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
 
             @Override
@@ -71,11 +72,11 @@ public class LoginActivity extends AppCompatActivity {
                             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                     intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, new String[] {"com.google"});
-                    Toast.makeText(LoginActivity.this, R.string.login_no_account_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, getText(R.string.app_no_credential_error), Toast.LENGTH_LONG).show();
                     startActivity(intent);
                 }
                 else if(!(e instanceof GetCredentialCancellationException)){
-                    Toast.makeText(LoginActivity.this, R.string.login_unknown_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, getText(R.string.app_unknown_login_error), Toast.LENGTH_LONG).show();
                 }
             }
         });

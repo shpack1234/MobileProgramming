@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -11,7 +11,7 @@
 
     <queries>
         <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE"/>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
         <intent>
             <action android:name="android.intent.action.GET_CONTENT" />
@@ -29,26 +29,30 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MPTeamProject"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:ignore="LockedOrientationActivity, DiscouragedApi">
+        <activity
+            android:name=".Activities.RecipeActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.AboutActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
         <activity
             android:name=".Activities.AddItemsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
-
-        <meta-data
-            android:name="com.ref.project.API_ENDPOINT"
-            android:value="${API_ENDPOINT}" />
-        <meta-data
-            android:name="com.ref.project.GOOGLE_CLIENT_ID"
-            android:value="${GOOGLE_CLIENT_ID}" />
-
         <activity
             android:name=".Activities.TosActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".Activities.LoginActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".Activities.IntroActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,8 +62,8 @@
         </activity>
         <activity
             android:name=".Activities.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.ref.project"
@@ -67,8 +71,14 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
+        <meta-data
+            android:name="com.ref.project.API_ENDPOINT"
+            android:value="${API_ENDPOINT}" />
+        <meta-data
+            android:name="com.ref.project.GOOGLE_CLIENT_ID"
+            android:value="${GOOGLE_CLIENT_ID}" />
     </application>
 
 </manifest>

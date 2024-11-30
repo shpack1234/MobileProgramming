@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="main_title">#dedede</color>
     <color name="card_background">#292929</color>
+    <color name="dialog_background">#292929</color>
 </resources>

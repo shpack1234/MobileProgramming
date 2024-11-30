@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="main_title">#010042</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="disabled">#969696</color>
-    <color name="card_background">#ededed</color>
+    <color name="card_background">#F5F5F5</color>
+    <color name="dialog_background">#F5F5F5</color>
 </resources>

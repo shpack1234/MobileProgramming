@@ -10,6 +10,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -19,6 +20,7 @@ import com.ref.project.Models.AddItemListModel;
 import com.ref.project.Models.CategoryListModel;
 import com.ref.project.Models.ItemListModel;
 import com.ref.project.Models.ReceiptModel;
+import com.ref.project.Models.RecipeModel;
 
 import java.io.IOException;
 import java.net.CookieManager;
@@ -75,13 +77,14 @@ public class ServerAdapter{
                 .build();
     }
 
-    private <T> void requestAsync(String taskName, Request request, Class<T> type, IServerRequestCallback<T> callback){
+    private <T> void requestAsync(String taskName, Request request, Class<T> type, @Nullable IServerRequestCallback<T> callback){
         Log.d(TAG, "RequestAsync (" + taskName + "): Begin.");
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "RequestAsync (" + taskName + ") Exception during request!\n" + e);
-                callback.onFailure();
+                if (callback != null) callback.onFailure();
+
             }
 
             @Override
@@ -100,18 +103,20 @@ public class ServerAdapter{
 
                     if(body == null || body.length == 0) {
                         Log.d(TAG, "RequestAsync (" + taskName + "): Ok [body.length=0]");
-                        callback.onSuccess(null);
+                        if(callback != null) callback.onSuccess(null);
                         return;
                     }
 
                     ObjectMapper mapper = new ObjectMapper();
+                    mapper.registerModule(new JavaTimeModule());
+                    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                     T model = mapper.readValue(body, type);
                     Log.d(TAG, "RequestAsync (" + taskName + "): " + new String(body, StandardCharsets.UTF_8));
-                    callback.onSuccess(model);
+                    if(callback != null) callback.onSuccess(model);
                 }
                 catch (Exception e){
                     Log.e(TAG, "RequestAsync (" + taskName + ") Exception during parsing!\n" + e);
-                    callback.onFailure();
+                    if(callback != null) callback.onFailure();
                 }
             }
         });
@@ -198,5 +203,34 @@ public class ServerAdapter{
                                         RequestBody.create(image)).setType(MultipartBody.FORM).build())
                         .build(),
                 ReceiptModel.class, callback);
+    }
+
+    public void InsightAsync(IServerRequestCallback<RecipeModel> callback){
+        requestAsync("RecipeAsync",
+                new Request.Builder()
+                        .url(endpoint + "/api/intelligence/insight")
+                        .get()
+                        .build(),
+                RecipeModel.class, callback);
+    }
+
+    public void DeleteItemAsync(int id, IServerRequestCallback<Void> callback){
+        requestAsync("DeleteItemAsync",
+                new Request.Builder()
+                        .url(endpoint + "/api/fridge/deleteItem")
+                        .post(new FormBody.Builder()
+                                .add("id", String.valueOf(id))
+                                .build())
+                        .build(),
+                Void.class, callback);
+    }
+
+    public void ResetAsync(IServerRequestCallback<Void> callback){
+        requestAsync("ResetAsync",
+                new Request.Builder()
+                        .url(endpoint + "/api/fridge/reset")
+                        .post(new FormBody.Builder().build())
+                        .build(),
+                Void.class, callback);
     }
 }
