@@ -138,6 +138,7 @@
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textFontWeight="400"
+        android:elevation="3dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mainSummationArea"
         tools:ignore="TouchTargetSizeCheck" />
@@ -155,6 +156,7 @@
         android:fontFamily="@font/pretendard"
         android:minHeight="42dp"
         android:padding="10dp"
+        android:elevation="3dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:textSize="16sp"

@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         viewHolder.CategoriesDropdown.setText(categories.stream().filter(x -> x.CategoryId == model.CategoryId).map(x -> x.CategoryName).findFirst().orElse("Unknown"));
 
         new AlertDialog.Builder(this)
-                .setTitle(R.string.additems_add_dialog_title)
+                .setTitle(R.string.item_detail_dialog_title)
                 .setView(view)
                 .setNeutralButton(R.string.additems_delete_action, (d,w) -> new AlertDialog.Builder(this)
                         .setTitle(R.string.item_delete_dialog_title)
@@ -227,9 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure() {
-                        MainActivity.this.runOnUiThread(() -> {
-                            Toast.makeText(MainActivity.this, R.string.app_api_error, Toast.LENGTH_LONG).show();
-                        });
+                        MainActivity.this.runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.app_api_error, Toast.LENGTH_LONG).show());
                     }
                 }))
                 .show();
