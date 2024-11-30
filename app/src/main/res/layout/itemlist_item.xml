@@ -11,10 +11,10 @@
     android:layout_height="40dp">
 
     <LinearLayout
-        android:layout_width="110dp"
+        android:layout_width="120dp"
         android:gravity="center"
         android:padding="5dp"
-        android:background="@drawable/card_background"
+        android:background="@drawable/item_header_background"
         android:layout_height="match_parent">
     <ImageView
         android:id="@+id/itemStatusIcon"
@@ -26,6 +26,7 @@
             android:id="@+id/itemStatusLabel"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
+            android:textSize="13sp"
             android:gravity="start"
             android:fontFamily="@font/pretendard"
             android:textFontWeight="800"/>
@@ -35,6 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="4"
+        android:textSize="13sp"
         android:layout_marginStart="15dp"
         android:fontFamily="@font/pretendard"
         android:textFontWeight="800"/>
@@ -43,6 +45,7 @@
         android:id="@+id/itemDescriptionLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textSize="13sp"
         android:layout_weight="9"
         android:fontFamily="@font/pretendard"
         android:textFontWeight="600"/>

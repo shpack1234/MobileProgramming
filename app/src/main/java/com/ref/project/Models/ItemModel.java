@@ -6,7 +6,7 @@ package com.ref.project.Models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class ItemModel {
     @JsonProperty("itemId")
@@ -25,8 +25,8 @@ public class ItemModel {
     public int ItemQuantity;
 
     @JsonProperty("itemImportDate")
-    public Date ItemImportDate;
+    public LocalDate ItemImportDate;
 
     @JsonProperty("itemExpireDate")
-    public Date ItemExpireDate;
+    public LocalDate ItemExpireDate;
 }

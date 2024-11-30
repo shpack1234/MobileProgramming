@@ -9,8 +9,8 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/importLoadingDialogSpinner"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,8 +20,6 @@
         android:layout_marginEnd="40dp"
         android:layout_marginTop="20dp"
         app:lottie_loop="true"
-
-        app:lottie_colorFilter="?attr/colorOnBackground"
         app:lottie_rawRes="@raw/star_animation" />
 
     <TextView
@@ -30,10 +28,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/pretendard"
-        android:text="@string/ai_loading"
+        android:text="@string/app_ai_wait_for_response"
         android:layout_marginBottom="20dp"
         android:textFontWeight="600"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

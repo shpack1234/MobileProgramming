@@ -71,9 +71,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:elevation="5dp"
         app:infoCardContent="@string/about_copyright"
         app:infoCardIcon="@drawable/github_icon"
         app:layout_constraintBottom_toBottomOf="parent" />

@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +23,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -40,7 +40,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.textfield.TextInputEditText;
 import com.ref.project.Activities.Adapters.AddItemListDataAdapter;
 import com.ref.project.Models.AddItemListModel;
 import com.ref.project.Models.AddItemModel;
@@ -50,6 +49,7 @@ import com.ref.project.Models.ReceiptItemModel;
 import com.ref.project.Models.ReceiptModel;
 import com.ref.project.R;
 import com.ref.project.Services.ServerAdapter;
+import com.ref.project.Views.ViewHolder.ItemDialogViewHolder;
 import com.ref.project.Views.WaitResponseDialog;
 import com.ref.project.Views.TitleBar;
 
@@ -74,6 +74,7 @@ public class AddItemsActivity extends AppCompatActivity {
     ServerAdapter serverAdapter;
 
     private static final String TAG = "AddItemsActivity";
+    public static final String SCAN_REQUEST_KEY = "REQUEST_SCAN";
     private ActivityResultLauncher<Intent> captureImageResultLauncher;
     private Uri captureImageFileUri;
     private Handler uiThreadHandler;
@@ -110,7 +111,7 @@ public class AddItemsActivity extends AppCompatActivity {
                         try{
                             if(o.getData() != null && o.getData().getData() != null) captureImageFileUri = o.getData().getData();
                             WaitResponseDialog dialog = new WaitResponseDialog();
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(AddItemsActivity.this.getContentResolver(), captureImageFileUri);
+                            Bitmap bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), captureImageFileUri));
                             byte[] imageBytes = bitmapToByteArray(bitmap);
                             dialog.show(getSupportFragmentManager(), "waitResponseDialog");
                             serverAdapter.ImportFromReceiptAsync(imageBytes, new ServerAdapter.IServerRequestCallback<ReceiptModel>() {
@@ -159,6 +160,8 @@ public class AddItemsActivity extends AppCompatActivity {
                 items = new ArrayList<>();
                 adapter = new AddItemListDataAdapter(AddItemsActivity.this, (x -> itemAction(x)), items, categories);
                 uiThreadHandler.post(() -> itemsListView.setAdapter(adapter));
+
+                if(getIntent().getBooleanExtra(SCAN_REQUEST_KEY, false)) captureCamera();
             }
 
             @Override
@@ -201,25 +204,17 @@ public class AddItemsActivity extends AppCompatActivity {
         if(items.isEmpty()) emptyPlaceholder.setVisibility(View.VISIBLE);
     }
 
-    private static class AddDialogComponents{
-        public TextInputEditText DescriptionText;
-        public TextInputEditText QuantityText;
-        public TextInputEditText ExpiresText;
-        public AutoCompleteTextView CategoriesDropdown;
-    }
-
-    private View configureDialogView(AddItemModel model, AddDialogComponents components){
-        @SuppressLint("InflateParams")
+    @SuppressLint("InflateParams")
+    private View configureDialogView(AddItemModel model, ItemDialogViewHolder components){
         View v = LayoutInflater.from(this).inflate(R.layout.additem_add_dialog, null, false);
-        components.DescriptionText = v.findViewById(R.id.itemDescriptionText);
-        components.ExpiresText = v.findViewById(R.id.itemExpiresText);
-        components.CategoriesDropdown = v.findViewById(R.id.itemCategoryList);
-        components.QuantityText = v.findViewById(R.id.itemQuantityText);
+        components.BindFromView(v);
 
         ArrayList<String> categoryList = new ArrayList<>();
         for(CategoryModel x : categories) categoryList.add(x.CategoryName);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(AddItemsActivity.this, R.layout.add_item_list, categoryList);
         components.CategoriesDropdown.setAdapter(adapter);
+        components.CreatedText.setText(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
+        components.CreatedText.setClickable(false);
         components.ExpiresText.setOnClickListener(x -> {
             MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker()
                     .setTitleText(getText(R.string.additems_datepicker_dialog_title))
@@ -242,21 +237,9 @@ public class AddItemsActivity extends AppCompatActivity {
         return v;
     }
 
-    private void AddDialogValidate(AddDialogComponents components, Button btn){
-        btn.setEnabled(components.ExpiresText.getText() != null &&
-                components.DescriptionText.getText() != null &&
-                components.QuantityText.getText() != null &
-                !components.ExpiresText.getText().toString().isEmpty() &&
-                !components.DescriptionText.getText().toString().isEmpty() &&
-                !components.QuantityText.getText().toString().isEmpty() &&
-                Integer.parseInt(components.QuantityText.getText().toString()) > 0 &&
-                Integer.parseInt(components.QuantityText.getText().toString()) < 99 &&
-                !components.CategoriesDropdown.getText().toString().isEmpty());
-    }
-
     private void itemAction(int idx){
         AddItemModel model = items.get(idx);
-        AddDialogComponents components = new AddDialogComponents();
+        ItemDialogViewHolder components = new ItemDialogViewHolder();
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.additems_action_dialog_title)
                 .setView(configureDialogView(model, components))
@@ -285,21 +268,21 @@ public class AddItemsActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                AddDialogValidate(components, btn);
+                components.ValidateForm(btn);
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         };
 
-        AddDialogValidate(components, btn);
+        components.ValidateForm(btn);
         components.ExpiresText.addTextChangedListener(watcher);
         components.DescriptionText.addTextChangedListener(watcher);
         components.QuantityText.addTextChangedListener(watcher);
     }
 
     private void addNewRecord(){
-        AddDialogComponents components = new AddDialogComponents();
+        ItemDialogViewHolder components = new ItemDialogViewHolder();
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.additems_add_dialog_title)
                 .setView(configureDialogView(null, components))
@@ -327,23 +310,21 @@ public class AddItemsActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                AddDialogValidate(components, btn);
+                components.ValidateForm(btn);
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         };
 
-        AddDialogValidate(components, btn);
+        components.ValidateForm(btn);
         components.ExpiresText.addTextChangedListener(watcher);
         components.DescriptionText.addTextChangedListener(watcher);
         components.QuantityText.addTextChangedListener(watcher);
     }
     //endregion
 
-
     //region Import from Receipt
-
     private byte[] bitmapToByteArray(Bitmap bitmap) {
         try(ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -395,7 +376,6 @@ public class AddItemsActivity extends AppCompatActivity {
             }
         }
         else Log.w(TAG, "ACTION_IMAGE_CAPTURE resolveActivity failed!");
-
     }
 
     private void selectFromGallery(){

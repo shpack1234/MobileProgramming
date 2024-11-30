@@ -73,7 +73,6 @@ public class AddItemListDataAdapter extends BaseAdapter {
             mViewHolder.expiresLabel = convertView.findViewById(R.id.itemExpiresLabel);
             mViewHolder.actionBtn = convertView.findViewById(R.id.itemActionBtn);
             mViewHolder.actionBtn.setOnClickListener(v -> actionHandler.onAction(pos));
-
             convertView.setTag(mViewHolder);
         }
         else{
