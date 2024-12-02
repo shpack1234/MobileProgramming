@@ -83,9 +83,9 @@ public class ItemListDataAdapter extends RecyclerView.Adapter {
             icon = R.drawable.error_icon;
             ((ViewHolder) holder).statusLabel.setText(R.string.item_status_expired);
         }
-        else if(delta == 1) {
+        else if(delta == 0) {
             icon = R.drawable.warning_icon;
-            ((ViewHolder) holder).statusLabel.setText(context.getString(R.string.item_status_days_left, delta));
+            ((ViewHolder) holder).statusLabel.setText(R.string.item_status_last_day);
         }
         else {
             icon = R.drawable.check_icon;

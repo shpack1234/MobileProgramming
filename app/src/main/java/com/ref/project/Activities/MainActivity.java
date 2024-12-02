@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 flag = false;
                 break;
             }
-            if(delta == 1){
+            if(delta == 0){
                 statusCard.setContentText((String)getText(R.string.main_summation_attention_required));
                 statusCard.setContentIcon(R.drawable.warning_icon);
                 flag = false;
