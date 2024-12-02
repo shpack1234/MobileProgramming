@@ -61,6 +61,7 @@
     <string name="item_created">생성일</string>
     <string name="item_expires">유효 기한</string>
     <string name="item_status_expired">만료</string>
+    <string name="item_status_last_day">내일 만료</string>
     <string name="item_status_days_left">%d일 남음</string>
     <string name="item_detail_dialog_title">항목 자세히 보기</string>
     <string name="item_delete_dialog_title">항목 삭제</string>
