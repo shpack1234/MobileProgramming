@@ -33,7 +33,7 @@ import com.ref.project.Models.ItemModel;
 import com.ref.project.Models.RecipeModel;
 import com.ref.project.R;
 import com.ref.project.Services.GoogleSignInManager;
-import com.ref.project.Services.ServerAdapter;
+import com.ref.project.Services.ServerContext;
 import com.ref.project.Views.InfoCard;
 import com.ref.project.Views.ViewHolder.ItemDialogViewHolder;
 import com.ref.project.Views.WaitResponseDialog;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     GoogleSignInManager signInManager;
 
     @Inject
-    ServerAdapter serverAdapter;
+    ServerContext serverContext;
 
     private boolean signedIn = false;
     private List<ItemModel> items;
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.scanActionBtn).setOnClickListener(v -> receiptCaptureAction());
 
         // 백엔드 토큰 로그온
-        serverAdapter.TokenSignInAsync(signInManager.GetIdToken(), new ServerAdapter.ITokenSignInCallback() {
+        serverContext.TokenSignInAsync(signInManager.GetIdToken(), new ServerContext.ITokenSignInCallback() {
             @Override
             public void onSuccess() {
                 updateData();
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
         WaitResponseDialog dialog = new WaitResponseDialog();
         dialog.show(getSupportFragmentManager(), "waitResponseDialog");
-        serverAdapter.InsightAsync(new ServerAdapter.IServerRequestCallback<RecipeModel>() {
+        serverContext.InsightAsync(new ServerContext.IServerRequestCallback<RecipeModel>() {
             @Override
             public void onSuccess(RecipeModel result) {
                 dialog.dismiss();
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteItemAction(int id){
-        serverAdapter.DeleteItemAsync(id, new ServerAdapter.IServerRequestCallback<Void>() {
+        serverContext.DeleteItemAsync(id, new ServerContext.IServerRequestCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
                 runOnUiThread(MainActivity.this::updateData);
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle(R.string.action_reset)
                 .setMessage(R.string.app_cannot_be_undone)
                 .setNegativeButton(R.string.app_cancel, null)
-                .setPositiveButton(R.string.app_confirm, (d, w) -> serverAdapter.ResetAsync(new ServerAdapter.IServerRequestCallback<Void>() {
+                .setPositiveButton(R.string.app_confirm, (d, w) -> serverContext.ResetAsync(new ServerContext.IServerRequestCallback<Void>() {
                     @Override
                     public void onSuccess(Void result) {
                         updateData();
@@ -236,11 +236,11 @@ public class MainActivity extends AppCompatActivity {
     // endregion
     // region Helper functions
     private void updateData(){
-        serverAdapter.GetItemListAsync(new ServerAdapter.IServerRequestCallback<ItemListModel>() {
+        serverContext.GetItemListAsync(new ServerContext.IServerRequestCallback<ItemListModel>() {
             @Override
             public void onSuccess(ItemListModel x) {
                 items = x.Items;
-                serverAdapter.GetCategoryListAsync(new ServerAdapter.IServerRequestCallback<CategoryListModel>() {
+                serverContext.GetCategoryListAsync(new ServerContext.IServerRequestCallback<CategoryListModel>() {
                     @Override
                     public void onSuccess(CategoryListModel y) {
                         categories = y.Categories;

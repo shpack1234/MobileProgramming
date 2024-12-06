@@ -48,7 +48,7 @@ import com.ref.project.Models.CategoryModel;
 import com.ref.project.Models.ReceiptItemModel;
 import com.ref.project.Models.ReceiptModel;
 import com.ref.project.R;
-import com.ref.project.Services.ServerAdapter;
+import com.ref.project.Services.ServerContext;
 import com.ref.project.Views.ViewHolder.ItemDialogViewHolder;
 import com.ref.project.Views.WaitResponseDialog;
 import com.ref.project.Views.TitleBar;
@@ -71,7 +71,7 @@ import jakarta.inject.Inject;
 @AndroidEntryPoint
 public class AddItemsActivity extends AppCompatActivity {
     @Inject
-    ServerAdapter serverAdapter;
+    ServerContext serverContext;
 
     private static final String TAG = "AddItemsActivity";
     public static final String SCAN_REQUEST_KEY = "REQUEST_SCAN";
@@ -114,7 +114,7 @@ public class AddItemsActivity extends AppCompatActivity {
                             Bitmap bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), captureImageFileUri));
                             byte[] imageBytes = bitmapToByteArray(bitmap);
                             dialog.show(getSupportFragmentManager(), "waitResponseDialog");
-                            serverAdapter.ImportFromReceiptAsync(imageBytes, new ServerAdapter.IServerRequestCallback<ReceiptModel>() {
+                            serverContext.ImportFromReceiptAsync(imageBytes, new ServerContext.IServerRequestCallback<ReceiptModel>() {
                                 @Override
                                 public void onSuccess(ReceiptModel result) {
                                     for(ReceiptItemModel x : result.Items) {
@@ -153,7 +153,7 @@ public class AddItemsActivity extends AppCompatActivity {
                     }
                 });
 
-        serverAdapter.GetCategoryListAsync(new ServerAdapter.IServerRequestCallback<CategoryListModel>() {
+        serverContext.GetCategoryListAsync(new ServerContext.IServerRequestCallback<CategoryListModel>() {
             @Override
             public void onSuccess(CategoryListModel result) {
                 categories = result.Categories;
@@ -177,7 +177,7 @@ public class AddItemsActivity extends AppCompatActivity {
     private void sendRequest() {
         AddItemListModel model = new AddItemListModel();
         model.Items = items;
-        serverAdapter.AddItemsAsync(model, new ServerAdapter.IServerRequestCallback<Void>() {
+        serverContext.AddItemsAsync(model, new ServerContext.IServerRequestCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
                 uiThreadHandler.post(() ->finish());

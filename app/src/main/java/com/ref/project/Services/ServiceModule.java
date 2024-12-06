@@ -19,8 +19,8 @@ public class ServiceModule {
 
     @Provides
     @Singleton
-    public ServerAdapter provideServerAdapter(@ApplicationContext Context context){
-        return new ServerAdapter(context);
+    public ServerContext provideServerContext(@ApplicationContext Context context){
+        return new ServerContext(context);
     }
 
     @Provides

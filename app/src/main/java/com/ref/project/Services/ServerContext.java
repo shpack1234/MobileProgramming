@@ -1,7 +1,6 @@
 /*
-    ServerAdapter - MPTeamProject
+    ServerContext - MPTeamProject
     Copyright (C) 2024-2025 Coppermine-SP - <https://github.com/Coppermine-SP>.
-
  */
 package com.ref.project.Services;
 
@@ -38,7 +37,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ServerAdapter{
+public class ServerContext {
     // Interfaces
     public interface ITokenSignInCallback {
         void onSuccess();
@@ -50,13 +49,13 @@ public class ServerAdapter{
         void onFailure();
     }
 
-    private static final String TAG = "ServerAdapter";
+    private static final String TAG = "ServerContext";
 
     private final String endpoint;
     private final OkHttpClient client;
 
     // Constructor
-    public ServerAdapter(Context context) throws IllegalArgumentException {
+    public ServerContext(Context context) throws IllegalArgumentException {
         Log.d(TAG, "init..");
 
         try {
