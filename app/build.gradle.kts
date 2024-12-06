@@ -1,3 +1,5 @@
+import com.android.sdklib.AndroidVersion.VersionCodes.TIRAMISU
+
 plugins {
     alias(libs.plugins.androidApplication)
     id("com.google.dagger.hilt.android")
@@ -5,13 +7,13 @@ plugins {
 }
 
 android {
-    namespace = "com.ref.project"
+    namespace = "corp.cloudint.fridgeplus"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.ref.project"
+        applicationId = "corp.cloudint.fridgeplus"
         minSdk = 31
-        targetSdk = 34
+        targetSdk = TIRAMISU
         versionCode = 1
         versionName = "1.0"
 
@@ -61,4 +63,10 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }

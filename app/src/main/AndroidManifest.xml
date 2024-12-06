@@ -19,7 +19,7 @@
     </queries>
 
     <application
-        android:name=".FridgePlusApp"
+        android:name="corp.cloudint.fridgeplus.FridgePlusApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -31,27 +31,27 @@
         android:usesCleartextTraffic="true"
         tools:ignore="LockedOrientationActivity, DiscouragedApi">
         <activity
-            android:name=".Activities.RecipeActivity"
+            android:name="corp.cloudint.fridgeplus.Activities.RecipeActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".Activities.AboutActivity"
+            android:name="corp.cloudint.fridgeplus.Activities.AboutActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".Activities.AddItemsActivity"
+            android:name="corp.cloudint.fridgeplus.Activities.AddItemsActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".Activities.TosActivity"
+            android:name="corp.cloudint.fridgeplus.Activities.TosActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".Activities.LoginActivity"
+            android:name="corp.cloudint.fridgeplus.Activities.LoginActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".Activities.IntroActivity"
+            android:name="corp.cloudint.fridgeplus.Activities.IntroActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
@@ -61,7 +61,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.MainActivity"
+            android:name="corp.cloudint.fridgeplus.Activities.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true" />
         <provider

@@ -5,9 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.AddItemsActivity">
+    tools:context="corp.cloudint.fridgeplus.Activities.AddItemsActivity">
 
-    <com.ref.project.Views.TitleBar
+    <corp.cloudint.fridgeplus.Views.TitleBar
         android:id="@+id/addItemTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
         tools:ignore="VisualLintButtonSize"
         tools:layout_editor_absoluteX="20dp" />
 
-    <com.ref.project.Views.InfoCard
+    <corp.cloudint.fridgeplus.Views.InfoCard
         android:id="@+id/addItemsInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

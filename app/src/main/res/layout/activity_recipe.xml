@@ -5,9 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.RecipeActivity">
+    tools:context="corp.cloudint.fridgeplus.Activities.RecipeActivity">
 
-    <com.ref.project.Views.TitleBar
+    <corp.cloudint.fridgeplus.Views.TitleBar
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.ref.project.Views.InfoCard
+    <corp.cloudint.fridgeplus.Views.InfoCard
         android:id="@+id/infoCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

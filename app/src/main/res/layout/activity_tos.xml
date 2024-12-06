@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="HardcodedText"
-    tools:context=".Activities.TosActivity">
-    <com.ref.project.Views.TitleBar
+    tools:context="corp.cloudint.fridgeplus.Activities.TosActivity">
+    <corp.cloudint.fridgeplus.Views.TitleBar
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/tosTitleBar"
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"/>
 
-    <com.ref.project.Views.InfoCard
+    <corp.cloudint.fridgeplus.Views.InfoCard
         android:id="@+id/tosWarning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

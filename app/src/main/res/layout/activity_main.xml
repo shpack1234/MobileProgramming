@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.MainActivity"
+    tools:context="corp.cloudint.fridgeplus.Activities.MainActivity"
     android:background="@drawable/main_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,7 +52,7 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.ref.project.Views.InfoCard
+    <corp.cloudint.fridgeplus.Views.InfoCard
         android:id="@+id/mainInfoCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
