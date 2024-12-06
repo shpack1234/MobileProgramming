@@ -55,7 +55,7 @@ public class IntroActivity extends AppCompatActivity {
             });
         }
         else {
-            new Handler().postDelayed(() -> endIntro(false), 1800);
+            new Handler(getMainLooper()).postDelayed(() -> endIntro(false), 1800);
 
         }
     }
