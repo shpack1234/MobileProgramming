@@ -68,6 +68,8 @@ import java.util.Objects;
 import dagger.hilt.android.AndroidEntryPoint;
 import jakarta.inject.Inject;
 
+//I really hate that java doesn't have a null coalescing operator.
+/** @noinspection OptionalGetWithoutIsPresent*/
 @AndroidEntryPoint
 public class AddItemsActivity extends AppCompatActivity {
     @Inject
