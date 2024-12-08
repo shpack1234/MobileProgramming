@@ -74,10 +74,10 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <meta-data
-            android:name="com.ref.project.API_ENDPOINT"
+            android:name="corp.cloudint.fridgeplus.API_ENDPOINT"
             android:value="${API_ENDPOINT}" />
         <meta-data
-            android:name="com.ref.project.GOOGLE_CLIENT_ID"
+            android:name="corp.cloudint.fridgeplus.GOOGLE_CLIENT_ID"
             android:value="${GOOGLE_CLIENT_ID}" />
     </application>
 

@@ -39,7 +39,7 @@ public class GoogleSignInManager {
             ApplicationInfo info = context.getPackageManager()
                     .getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
 
-            clientId = info.metaData.getString("com.ref.project.GOOGLE_CLIENT_ID");
+            clientId = info.metaData.getString("corp.cloudint.fridgeplus.GOOGLE_CLIENT_ID");
             if(clientId == null) throw new Exception();
 
         }

@@ -62,7 +62,7 @@ public class ServerContext {
             ApplicationInfo info = context.getPackageManager()
                     .getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
 
-            endpoint = info.metaData.getString("com.ref.project.API_ENDPOINT");
+            endpoint = info.metaData.getString("corp.cloudint.fridgeplus.API_ENDPOINT");
         }
         catch (PackageManager.NameNotFoundException e){
             Log.e(TAG, "API_ENDPOINT was not found in META_DATA!");
